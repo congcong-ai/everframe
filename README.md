@@ -6,6 +6,10 @@ EverFrame 是一款本机优先的原生录像与工作时间轴应用，适用�
 
 项目仍在开发中。编译通过不代表相机、麦克风、音轨、双摄或长时间录像已通过所有设备的实机验收。使用前请阅读下方的已知限制和对应平台测试手册。
 
+**Android：** [下载 v0.1.0 APK（预览版）](https://github.com/congcong-ai/everframe/releases/latest/download/everframe-android-v0.1.0-debug.apk)。这是用于直接安装体验的开发签名版本。
+
+**iOS：** 正在申请 Apple Developer Program 开发者账号，后续计划上架 App Store。
+
 ## 功能
 
 - **录像与分段：** 用户手动开始和停止；支持前后摄像头、自动分段和预览。
@@ -20,8 +24,8 @@ EverFrame 是一款本机优先的原生录像与工作时间轴应用，适用�
 
 | 平台 | 技术 | 最低版本 | 状态 |
 | --- | --- | --- | --- |
-| iOS | SwiftUI、AVFoundation | iOS 16 | 原生工程；摄像头、麦克风、长时间录像等仍需按测试手册完成实机验收 |
-| Android | Kotlin、Jetpack Compose、CameraX | Android 8.0（API 26） | 原生工程；录像、音轨、双摄和长时间稳定性仍需实机验收 |
+| iOS | SwiftUI、AVFoundation | iOS 16 | 正在申请开发者账号，后续计划上架 App Store；摄像头、麦克风和长时间录像仍需实机验收 |
+| Android | Kotlin、Jetpack Compose、CameraX | Android 8.0（API 26） | 提供 v0.1.0 预览 APK；录像、音轨、双摄和长时间稳定性仍需实机验收 |
 
 双摄录制依赖设备支持并发前后摄像头；代码实现不代表所有机型均兼容。Android 系统文件转写是默认关闭的实验功能，设备支持情况和识别服务行为需要单独验证。详见 [Android 说明](android/README.md)。
 
