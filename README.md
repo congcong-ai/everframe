@@ -6,7 +6,7 @@ EverFrame 是一款本机优先的原生录像与工作时间轴应用，适用�
 
 项目仍在开发中。编译通过不代表相机、麦克风、音轨、双摄或长时间录像已通过所有设备的实机验收。使用前请阅读下方的已知限制和对应平台测试手册。
 
-**Android：** [下载 v0.1.0 APK（预览版）](https://github.com/congcong-ai/everframe/releases/latest/download/everframe-android-v0.1.0-debug.apk)。这是用于直接安装体验的开发签名版本。
+**Android：** [下载 v0.1.0 APK（预览版）](https://github.com/congcong-ai/everframe/releases/download/v0.1.0/everframe-android-v0.1.0-debug.apk)。这是用于直接安装体验的开发签名版本。
 
 **iOS：** 正在申请 Apple Developer Program 开发者账号，后续计划上架 App Store。
 
