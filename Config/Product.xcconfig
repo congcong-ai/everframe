@@ -1,0 +1,17 @@
+// 产品身份集中配置；使用个人唯一的 Bundle Identifier。
+PRODUCT_NAME = EverFrame
+PRODUCT_DISPLAY_NAME = EverFrame
+PRODUCT_BUNDLE_IDENTIFIER = com.example.everframe
+IPHONEOS_DEPLOYMENT_TARGET = 16.0
+SWIFT_VERSION = 5.0
+TARGETED_DEVICE_FAMILY = 1
+MARKETING_VERSION = 0.1.0
+CURRENT_PROJECT_VERSION = 3
+CODE_SIGN_STYLE = Automatic
+INFOPLIST_FILE = EverFrame/Resources/Info.plist
+GENERATE_INFOPLIST_FILE = NO
+SUPPORTED_PLATFORMS = iphoneos iphonesimulator
+SUPPORTS_MACCATALYST = NO
+SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO
+// 本地签名覆盖不进 Git；见 Config/Local.xcconfig.example。
+#include? "Local.xcconfig"

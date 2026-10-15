@@ -1,0 +1,316 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		6832906FE0C2C9F8B1E6F734 /* EverFrame/Core/Recording/DualCameraCompositor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A844701F32C1C1B3E48EA08; };
+		5C04422E160D93450E28682E /* EverFrame/Core/Recording/DualRecordingEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3E654984E589A532221CD1; };
+		06765D0C5E82A02404ED1A17 /* EverFrame/Core/Recording/RecordingContinuation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E4E713458BDEC1F982F2AD; };
+		06B4ABCDD2399FBF0FA6E180 /* EverFrame/Features/Settings/SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42AD4CE75E02225D3EE8AF /* EverFrame/Features/Settings/SettingsView.swift */; };
+		0FB3BFDF1E5F262B9202663A /* EverFrame/Core/AppLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DAB10F346EA9E6201E81F24 /* EverFrame/Core/AppLogger.swift */; };
+		20E12BFC080B911C818A6F22 /* EverFrame/Core/AI/DeepSeekProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6985A88E2D50B36ACCD147 /* EverFrame/Core/AI/DeepSeekProvider.swift */; };
+		28D1F3B0DD2C47D03490A02E /* EverFrame/Web/style.css in Resources */ = {isa = PBXBuildFile; fileRef = 9FF4BC6B1C9CBC14F1B68AFE /* EverFrame/Web/style.css */; };
+		2D36128FED5E61D017F90AA4 /* EverFrame/Models/AIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045D43E2EF9AEDAFE812C681 /* EverFrame/Models/AIModels.swift */; };
+		30A7AB299860F3BCF9F3AD54 /* EverFrame/Features/Recorder/RecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3CCA582B4430048089D22A /* EverFrame/Features/Recorder/RecorderView.swift */; };
+		31789C7E5E8A07A1D9B14CA2 /* EverFrame/Models/Clip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413444796A9402A1D918BD1B /* EverFrame/Models/Clip.swift */; };
+		3ACE87F7A82E5ED6BEC75511 /* EverFrame/Core/Storage/StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82B943598C34AB4BE2A71D1 /* EverFrame/Core/Storage/StorageManager.swift */; };
+		4693D494D027D95763F783F9 /* EverFrame/Core/WebServer/WebAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F938C41F2492EEF9C144E82 /* EverFrame/Core/WebServer/WebAPI.swift */; };
+		495039C33E3D841BBA6172AA /* EverFrame/Core/WebServer/HTTPParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF3CBEC1EF0EE940CC85ADF /* EverFrame/Core/WebServer/HTTPParser.swift */; };
+		51E32689B423E206D5630C95 /* EverFrame/Core/AI/AIJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1EA0B4AC2CE588F9BDCA8FD /* EverFrame/Core/AI/AIJSON.swift */; };
+		5AC1A0290E77752CE1AF01DA /* EverFrame/Core/Storage/DataRepositories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7420DAA3D82FAAF4135EBCAE /* EverFrame/Core/Storage/DataRepositories.swift */; };
+		5CAAA72950F25B63BDBD12B9 /* EverFrame/App/Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB635FBEE397B8CA5039574 /* EverFrame/App/Product.swift */; };
+		669B69A577921B2FF5D50676 /* EverFrame/Resources/PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 44FDA3C109CEDB661A375604 /* EverFrame/Resources/PrivacyInfo.xcprivacy */; };
+		817E67E01DD8944D51992E3F /* EverFrame/Core/AI/AnalysisQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737A4E33AD5CCCA09146A72 /* EverFrame/Core/AI/AnalysisQueue.swift */; };
+		8D04680DC98F254EAFE8C515 /* EverFrame/Features/Clips/ClipsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBAE9614BE6CD0CAC675552D /* EverFrame/Features/Clips/ClipsView.swift */; };
+		903B4896AF706FEA0F025118 /* EverFrame/Features/Clips/ClipPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66764A7342C574AD7981D9E9 /* EverFrame/Features/Clips/ClipPlayer.swift */; };
+		9CAC540005B4BCEF49D5264E /* EverFrame/Core/Security/KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E2EB69F3768B0C92C7DD55 /* EverFrame/Core/Security/KeychainStore.swift */; };
+		A290960025BECF5CE0AD4579 /* EverFrame/Core/Storage/ClipRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E16EF29E103E749A9E90364 /* EverFrame/Core/Storage/ClipRepository.swift */; };
+		B1A9533B8A51E1C7B517C8E2 /* EverFrame/Core/Transcription/TranscriptionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396A586F30D3A1984678EEAB /* EverFrame/Core/Transcription/TranscriptionProvider.swift */; };
+		BB838AB6871557EDD0125EAF /* EverFrame/Web/index.html in Resources */ = {isa = PBXBuildFile; fileRef = 3F7F12B4368D0ABCA110D52A /* EverFrame/Web/index.html */; };
+		BC2E6F82A14360401647B009 /* EverFrame/Core/WebServer/LocalWebServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2687D9AA6BC0DFC8A6187101 /* EverFrame/Core/WebServer/LocalWebServer.swift */; };
+		C3FFD65D3C229B1EB1D94A12 /* EverFrame/Features/Timeline/TimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A82101F8B835112DA847262 /* EverFrame/Features/Timeline/TimelineView.swift */; };
+		C452E8C5F861DBFAD320DC4F /* EverFrame/Core/Storage/CrashRecovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 736C2845E388529D30B01E9A /* EverFrame/Core/Storage/CrashRecovery.swift */; };
+		C65D7384F634359469023DE1 /* EverFrame/Core/Security/PairingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563779199057C4D5DE352689 /* EverFrame/Core/Security/PairingStore.swift */; };
+		E84C231EF0DFE5BF915C6B1F /* EverFrame/Core/Recording/RecordingEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE84CA0D25AE8AE94C7D9B3 /* EverFrame/Core/Recording/RecordingEngine.swift */; };
+		E9400216B3ACB35E5605DC0B /* EverFrame/Web/app.js in Resources */ = {isa = PBXBuildFile; fileRef = B6BA1573ABB83318517E56D7 /* EverFrame/Web/app.js */; };
+		ECC600E45281E849BD2AD96E /* EverFrame/App/EverFrameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10D1B3BC06A421E9E929D5A9 /* EverFrame/App/EverFrameApp.swift */; };
+		F21A8618E4518D1CDF50F4BB /* EverFrame/Features/Recorder/CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD12AEDD11706DBB4AB765E6 /* EverFrame/Features/Recorder/CameraPreview.swift */; };
+		F90A403813829844BF0455EF /* EverFrame/Models/AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6DDA570D3FB3B0A3AF2777 /* EverFrame/Models/AppSettings.swift */; };
+		FCD28C93F9AA63F2BBCEFFDB /* EverFrame/App/AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87242EFF81CC7EDDE8174FE4 /* EverFrame/App/AppModel.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0A844701F32C1C1B3E48EA08 /* EverFrame/Core/Recording/DualCameraCompositor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/Recording/DualCameraCompositor.swift; sourceTree = SOURCE_ROOT; };
+		DC3E654984E589A532221CD1 /* EverFrame/Core/Recording/DualRecordingEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/Recording/DualRecordingEngine.swift; sourceTree = SOURCE_ROOT; };
+		94E4E713458BDEC1F982F2AD /* EverFrame/Core/Recording/RecordingContinuation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/Recording/RecordingContinuation.swift; sourceTree = SOURCE_ROOT; };
+		045D43E2EF9AEDAFE812C681 /* EverFrame/Models/AIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Models/AIModels.swift; sourceTree = SOURCE_ROOT; };
+		0E16EF29E103E749A9E90364 /* EverFrame/Core/Storage/ClipRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/Storage/ClipRepository.swift; sourceTree = SOURCE_ROOT; };
+		10D1B3BC06A421E9E929D5A9 /* EverFrame/App/EverFrameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/App/EverFrameApp.swift; sourceTree = SOURCE_ROOT; };
+		2687D9AA6BC0DFC8A6187101 /* EverFrame/Core/WebServer/LocalWebServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/WebServer/LocalWebServer.swift; sourceTree = SOURCE_ROOT; };
+		2AF3CBEC1EF0EE940CC85ADF /* EverFrame/Core/WebServer/HTTPParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/WebServer/HTTPParser.swift; sourceTree = SOURCE_ROOT; };
+		2B3CCA582B4430048089D22A /* EverFrame/Features/Recorder/RecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Features/Recorder/RecorderView.swift; sourceTree = SOURCE_ROOT; };
+		38A007151ABE87CC01A5B6E9 /* EverFrame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = EverFrame.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		396A586F30D3A1984678EEAB /* EverFrame/Core/Transcription/TranscriptionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/Transcription/TranscriptionProvider.swift; sourceTree = SOURCE_ROOT; };
+		3F7F12B4368D0ABCA110D52A /* EverFrame/Web/index.html */ = {isa = PBXFileReference; lastKnownFileType = text; path = EverFrame/Web/index.html; sourceTree = SOURCE_ROOT; };
+		413444796A9402A1D918BD1B /* EverFrame/Models/Clip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Models/Clip.swift; sourceTree = SOURCE_ROOT; };
+		44FDA3C109CEDB661A375604 /* EverFrame/Resources/PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text; path = EverFrame/Resources/PrivacyInfo.xcprivacy; sourceTree = SOURCE_ROOT; };
+		4A82101F8B835112DA847262 /* EverFrame/Features/Timeline/TimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Features/Timeline/TimelineView.swift; sourceTree = SOURCE_ROOT; };
+		563779199057C4D5DE352689 /* EverFrame/Core/Security/PairingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/Security/PairingStore.swift; sourceTree = SOURCE_ROOT; };
+		5E42AD4CE75E02225D3EE8AF /* EverFrame/Features/Settings/SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Features/Settings/SettingsView.swift; sourceTree = SOURCE_ROOT; };
+		66764A7342C574AD7981D9E9 /* EverFrame/Features/Clips/ClipPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Features/Clips/ClipPlayer.swift; sourceTree = SOURCE_ROOT; };
+		6DAB10F346EA9E6201E81F24 /* EverFrame/Core/AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/AppLogger.swift; sourceTree = SOURCE_ROOT; };
+		6F938C41F2492EEF9C144E82 /* EverFrame/Core/WebServer/WebAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/WebServer/WebAPI.swift; sourceTree = SOURCE_ROOT; };
+		736C2845E388529D30B01E9A /* EverFrame/Core/Storage/CrashRecovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/Storage/CrashRecovery.swift; sourceTree = SOURCE_ROOT; };
+		7420DAA3D82FAAF4135EBCAE /* EverFrame/Core/Storage/DataRepositories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/Storage/DataRepositories.swift; sourceTree = SOURCE_ROOT; };
+		7BE84CA0D25AE8AE94C7D9B3 /* EverFrame/Core/Recording/RecordingEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/Recording/RecordingEngine.swift; sourceTree = SOURCE_ROOT; };
+		87242EFF81CC7EDDE8174FE4 /* EverFrame/App/AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/App/AppModel.swift; sourceTree = SOURCE_ROOT; };
+		9737A4E33AD5CCCA09146A72 /* EverFrame/Core/AI/AnalysisQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/AI/AnalysisQueue.swift; sourceTree = SOURCE_ROOT; };
+		9FF4BC6B1C9CBC14F1B68AFE /* EverFrame/Web/style.css */ = {isa = PBXFileReference; lastKnownFileType = text; path = EverFrame/Web/style.css; sourceTree = SOURCE_ROOT; };
+		B3E2EB69F3768B0C92C7DD55 /* EverFrame/Core/Security/KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/Security/KeychainStore.swift; sourceTree = SOURCE_ROOT; };
+		B6BA1573ABB83318517E56D7 /* EverFrame/Web/app.js */ = {isa = PBXFileReference; lastKnownFileType = text; path = EverFrame/Web/app.js; sourceTree = SOURCE_ROOT; };
+		B82B943598C34AB4BE2A71D1 /* EverFrame/Core/Storage/StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/Storage/StorageManager.swift; sourceTree = SOURCE_ROOT; };
+		D1EA0B4AC2CE588F9BDCA8FD /* EverFrame/Core/AI/AIJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/AI/AIJSON.swift; sourceTree = SOURCE_ROOT; };
+		DC6DDA570D3FB3B0A3AF2777 /* EverFrame/Models/AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Models/AppSettings.swift; sourceTree = SOURCE_ROOT; };
+		DFBA7AADE0868074C2861C98 /* Config/Product.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/Product.xcconfig; sourceTree = SOURCE_ROOT; };
+		EDB635FBEE397B8CA5039574 /* EverFrame/App/Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/App/Product.swift; sourceTree = SOURCE_ROOT; };
+		FBAE9614BE6CD0CAC675552D /* EverFrame/Features/Clips/ClipsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Features/Clips/ClipsView.swift; sourceTree = SOURCE_ROOT; };
+		FD12AEDD11706DBB4AB765E6 /* EverFrame/Features/Recorder/CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Features/Recorder/CameraPreview.swift; sourceTree = SOURCE_ROOT; };
+		FF6985A88E2D50B36ACCD147 /* EverFrame/Core/AI/DeepSeekProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/AI/DeepSeekProvider.swift; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		7561BFB015D8F536760CB671 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		64292B1C2B2E13EAD8788FC8 = {
+			isa = PBXGroup;
+			children = (
+				0A844701F32C1C1B3E48EA08 /* EverFrame/Core/Recording/DualCameraCompositor.swift */,
+				DC3E654984E589A532221CD1 /* EverFrame/Core/Recording/DualRecordingEngine.swift */,
+				94E4E713458BDEC1F982F2AD /* EverFrame/Core/Recording/RecordingContinuation.swift */,
+				87242EFF81CC7EDDE8174FE4 /* EverFrame/App/AppModel.swift */,
+				10D1B3BC06A421E9E929D5A9 /* EverFrame/App/EverFrameApp.swift */,
+				EDB635FBEE397B8CA5039574 /* EverFrame/App/Product.swift */,
+				D1EA0B4AC2CE588F9BDCA8FD /* EverFrame/Core/AI/AIJSON.swift */,
+				9737A4E33AD5CCCA09146A72 /* EverFrame/Core/AI/AnalysisQueue.swift */,
+				FF6985A88E2D50B36ACCD147 /* EverFrame/Core/AI/DeepSeekProvider.swift */,
+				6DAB10F346EA9E6201E81F24 /* EverFrame/Core/AppLogger.swift */,
+				7BE84CA0D25AE8AE94C7D9B3 /* EverFrame/Core/Recording/RecordingEngine.swift */,
+				B3E2EB69F3768B0C92C7DD55 /* EverFrame/Core/Security/KeychainStore.swift */,
+				563779199057C4D5DE352689 /* EverFrame/Core/Security/PairingStore.swift */,
+				0E16EF29E103E749A9E90364 /* EverFrame/Core/Storage/ClipRepository.swift */,
+				736C2845E388529D30B01E9A /* EverFrame/Core/Storage/CrashRecovery.swift */,
+				7420DAA3D82FAAF4135EBCAE /* EverFrame/Core/Storage/DataRepositories.swift */,
+				B82B943598C34AB4BE2A71D1 /* EverFrame/Core/Storage/StorageManager.swift */,
+				396A586F30D3A1984678EEAB /* EverFrame/Core/Transcription/TranscriptionProvider.swift */,
+				2AF3CBEC1EF0EE940CC85ADF /* EverFrame/Core/WebServer/HTTPParser.swift */,
+				2687D9AA6BC0DFC8A6187101 /* EverFrame/Core/WebServer/LocalWebServer.swift */,
+				6F938C41F2492EEF9C144E82 /* EverFrame/Core/WebServer/WebAPI.swift */,
+				66764A7342C574AD7981D9E9 /* EverFrame/Features/Clips/ClipPlayer.swift */,
+				FBAE9614BE6CD0CAC675552D /* EverFrame/Features/Clips/ClipsView.swift */,
+				FD12AEDD11706DBB4AB765E6 /* EverFrame/Features/Recorder/CameraPreview.swift */,
+				2B3CCA582B4430048089D22A /* EverFrame/Features/Recorder/RecorderView.swift */,
+				5E42AD4CE75E02225D3EE8AF /* EverFrame/Features/Settings/SettingsView.swift */,
+				4A82101F8B835112DA847262 /* EverFrame/Features/Timeline/TimelineView.swift */,
+				045D43E2EF9AEDAFE812C681 /* EverFrame/Models/AIModels.swift */,
+				DC6DDA570D3FB3B0A3AF2777 /* EverFrame/Models/AppSettings.swift */,
+				413444796A9402A1D918BD1B /* EverFrame/Models/Clip.swift */,
+				44FDA3C109CEDB661A375604 /* EverFrame/Resources/PrivacyInfo.xcprivacy */,
+				B6BA1573ABB83318517E56D7 /* EverFrame/Web/app.js */,
+				3F7F12B4368D0ABCA110D52A /* EverFrame/Web/index.html */,
+				9FF4BC6B1C9CBC14F1B68AFE /* EverFrame/Web/style.css */,
+				DFBA7AADE0868074C2861C98 /* Config/Product.xcconfig */,
+				38A007151ABE87CC01A5B6E9 /* EverFrame.app */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0E8A3AD980EC179856012B7E /* EverFrame */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C57128001CE614BF8549D6BB /* Build configuration list for PBXNativeTarget "EverFrame" */;
+			buildPhases = (
+				BCE16DD0260827ECF338C787 /* Sources */,
+				7561BFB015D8F536760CB671 /* Frameworks */,
+				0189424A5A60FED329FA868E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = EverFrame;
+			productName = EverFrame;
+			productReference = 38A007151ABE87CC01A5B6E9 /* EverFrame.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		98F54143AB4E86B28C3AFEE0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2650;
+			};
+			buildConfigurationList = 862894B703A6DEDF96A9DD6C /* Build configuration list for PBXProject "EverFrame" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = "zh-Hans";
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				"zh-Hans",
+				en,
+				Base,
+			);
+			mainGroup = 64292B1C2B2E13EAD8788FC8;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0E8A3AD980EC179856012B7E /* EverFrame */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0189424A5A60FED329FA868E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				669B69A577921B2FF5D50676 /* EverFrame/Resources/PrivacyInfo.xcprivacy in Resources */,
+				E9400216B3ACB35E5605DC0B /* EverFrame/Web/app.js in Resources */,
+				BB838AB6871557EDD0125EAF /* EverFrame/Web/index.html in Resources */,
+				28D1F3B0DD2C47D03490A02E /* EverFrame/Web/style.css in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BCE16DD0260827ECF338C787 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6832906FE0C2C9F8B1E6F734 /* EverFrame/Core/Recording/DualCameraCompositor.swift in Sources */,
+				5C04422E160D93450E28682E /* EverFrame/Core/Recording/DualRecordingEngine.swift in Sources */,
+				06765D0C5E82A02404ED1A17 /* EverFrame/Core/Recording/RecordingContinuation.swift in Sources */,
+				FCD28C93F9AA63F2BBCEFFDB /* EverFrame/App/AppModel.swift in Sources */,
+				ECC600E45281E849BD2AD96E /* EverFrame/App/EverFrameApp.swift in Sources */,
+				5CAAA72950F25B63BDBD12B9 /* EverFrame/App/Product.swift in Sources */,
+				51E32689B423E206D5630C95 /* EverFrame/Core/AI/AIJSON.swift in Sources */,
+				817E67E01DD8944D51992E3F /* EverFrame/Core/AI/AnalysisQueue.swift in Sources */,
+				20E12BFC080B911C818A6F22 /* EverFrame/Core/AI/DeepSeekProvider.swift in Sources */,
+				0FB3BFDF1E5F262B9202663A /* EverFrame/Core/AppLogger.swift in Sources */,
+				E84C231EF0DFE5BF915C6B1F /* EverFrame/Core/Recording/RecordingEngine.swift in Sources */,
+				9CAC540005B4BCEF49D5264E /* EverFrame/Core/Security/KeychainStore.swift in Sources */,
+				C65D7384F634359469023DE1 /* EverFrame/Core/Security/PairingStore.swift in Sources */,
+				A290960025BECF5CE0AD4579 /* EverFrame/Core/Storage/ClipRepository.swift in Sources */,
+				C452E8C5F861DBFAD320DC4F /* EverFrame/Core/Storage/CrashRecovery.swift in Sources */,
+				5AC1A0290E77752CE1AF01DA /* EverFrame/Core/Storage/DataRepositories.swift in Sources */,
+				3ACE87F7A82E5ED6BEC75511 /* EverFrame/Core/Storage/StorageManager.swift in Sources */,
+				B1A9533B8A51E1C7B517C8E2 /* EverFrame/Core/Transcription/TranscriptionProvider.swift in Sources */,
+				495039C33E3D841BBA6172AA /* EverFrame/Core/WebServer/HTTPParser.swift in Sources */,
+				BC2E6F82A14360401647B009 /* EverFrame/Core/WebServer/LocalWebServer.swift in Sources */,
+				4693D494D027D95763F783F9 /* EverFrame/Core/WebServer/WebAPI.swift in Sources */,
+				903B4896AF706FEA0F025118 /* EverFrame/Features/Clips/ClipPlayer.swift in Sources */,
+				8D04680DC98F254EAFE8C515 /* EverFrame/Features/Clips/ClipsView.swift in Sources */,
+				F21A8618E4518D1CDF50F4BB /* EverFrame/Features/Recorder/CameraPreview.swift in Sources */,
+				30A7AB299860F3BCF9F3AD54 /* EverFrame/Features/Recorder/RecorderView.swift in Sources */,
+				06B4ABCDD2399FBF0FA6E180 /* EverFrame/Features/Settings/SettingsView.swift in Sources */,
+				C3FFD65D3C229B1EB1D94A12 /* EverFrame/Features/Timeline/TimelineView.swift in Sources */,
+				2D36128FED5E61D017F90AA4 /* EverFrame/Models/AIModels.swift in Sources */,
+				F90A403813829844BF0455EF /* EverFrame/Models/AppSettings.swift in Sources */,
+				31789C7E5E8A07A1D9B14CA2 /* EverFrame/Models/Clip.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		639A7CA24D39909E713B47F7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DFBA7AADE0868074C2861C98 /* Config/Product.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 39DP453QT6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.peter.everframe;
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		7082CC0B6FC1282FCEABD07A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DFBA7AADE0868074C2861C98 /* Config/Product.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 39DP453QT6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.peter.everframe;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		89E1FD6268CC0F221A2BE178 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DFBA7AADE0868074C2861C98 /* Config/Product.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E6DE6C99132752C914FEF632 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DFBA7AADE0868074C2861C98 /* Config/Product.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		862894B703A6DEDF96A9DD6C /* Build configuration list for PBXProject "EverFrame" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				89E1FD6268CC0F221A2BE178 /* Debug */,
+				E6DE6C99132752C914FEF632 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C57128001CE614BF8549D6BB /* Build configuration list for PBXNativeTarget "EverFrame" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7082CC0B6FC1282FCEABD07A /* Debug */,
+				639A7CA24D39909E713B47F7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 98F54143AB4E86B28C3AFEE0 /* Project object */;
+}

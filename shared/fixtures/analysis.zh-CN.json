@@ -1,0 +1,9 @@
+{
+  "summary": "讨论录像与音轨验证以及转写时间戳。",
+  "topics": ["录像验证", "时间戳"],
+  "importance_score": 75,
+  "suggested_review": true,
+  "review_reason": "包含验证目标。",
+  "timeline": [{"start": 0.5, "end": 4.0, "title": "音画验证", "summary": "先检查录像与音轨。", "importance_score": 75}],
+  "ideas": [{"timestamp": 55.0, "text": "转写块需要恢复原录像秒偏移。"}]
+}

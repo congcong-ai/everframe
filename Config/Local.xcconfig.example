@@ -1,0 +1,4 @@
+// 复制为 Local.xcconfig 后填写；该文件已被忽略。
+// 或直接在 Xcode Signing & Capabilities 选择 Personal Team。
+PRODUCT_BUNDLE_IDENTIFIER = com.yourname.everframe
+// DEVELOPMENT_TEAM = 你的TeamID

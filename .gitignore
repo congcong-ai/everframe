@@ -1,0 +1,25 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+.envrc
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+*.ipa
+*.p12
+*.mobileprovision
+Config/Local.xcconfig
+temp/
+
+# Android 本地工具、签名和缓存
+.gradle/
+.kotlin/
+local.properties
+*.jks
+*.keystore
+keystore.properties
+captures/
+.externalNativeBuild/
+.cxx/
