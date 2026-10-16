@@ -26,6 +26,19 @@ class RecordingController(private val context: Context, private val repo: ClipRe
     val dual = MutableStateFlow(false)
     val lens = MutableStateFlow(CameraSelector.LENS_FACING_BACK)
     var foreground = false
+    private var serviceOwner: LifecycleOwner? = null
+    val backgroundRecording = MutableStateFlow(false)
+    val sessionRequested get() = intent.continueSession
+    private val canCapture get() = foreground || backgroundRecording.value
+    fun attachService(owner: LifecycleOwner) {
+        serviceOwner = owner; backgroundRecording.value = true; capture = null
+    }
+    fun detachService() {
+        if (serviceOwner == null) return
+        serviceOwner = null; backgroundRecording.value = false
+        if (active) stop("持续录像服务已停止，请返回前台检查文件并手动开始")
+        capture = null; provider?.unbindAll()
+    }
     var debugSegmentSeconds = 0
     private var provider: ProcessCameraProvider? = null
     private var capture: VideoCapture<Recorder>? = null
@@ -34,6 +47,7 @@ class RecordingController(private val context: Context, private val repo: ClipRe
     private var recording: Recording? = null
     private var owner: LifecycleOwner? = null
     private var preview: PreviewView? = null
+    private var previewUseCase: Preview? = null
     private val intent = RecordingIntent()
     private var timer: Job? = null
     private var watchdog: Job? = null
@@ -48,8 +62,9 @@ class RecordingController(private val context: Context, private val repo: ClipRe
     val active get() = state.value in listOf(RecorderState.PREPARING, RecorderState.RECORDING, RecorderState.FINALIZING)
     fun ready() { state.value = RecorderState.IDLE }
     fun attach(owner: LifecycleOwner, view: PreviewView) {
-        if (this.owner !== owner || preview !== view) { if (active) stop("取景页面重建，已停止录像"); capture = null }
+        if ((this.owner !== owner || preview !== view) && !backgroundRecording.value) { if (active) stop("取景页面重建，已停止录像"); capture = null }
         this.owner = owner; preview = view
+        if (backgroundRecording.value) previewUseCase?.setSurfaceProvider(view.surfaceProvider)
     }
     fun permissions() = listOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO).all {
         ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
@@ -64,15 +79,16 @@ class RecordingController(private val context: Context, private val repo: ClipRe
     }
     private suspend fun bind(expectedGeneration: Int = generation) {
         val p = cameraProvider()
-        check(expectedGeneration == generation && foreground) { "准备已取消，请手动重新开始" }
+        check(expectedGeneration == generation && canCapture) { "准备已取消，请手动重新开始" }
         observedOwner?.let { old -> observedCameras.forEach { it.cameraState.removeObservers(old) } }
         observedCameras = emptyList()
         p.unbindAll()
         val view = requireNotNull(preview) { "取景器尚未就绪" }
-        val lifecycle = requireNotNull(owner) { "页面尚未就绪" }
+        val lifecycle = requireNotNull(serviceOwner ?: owner) { "页面尚未就绪" }
         val surface = Preview.Builder().setTargetRotation(Surface.ROTATION_0)
             .setResolutionSelector(ResolutionSelector.Builder().setAspectRatioStrategy(AspectRatioStrategy.RATIO_16_9_FALLBACK_AUTO_STRATEGY).build()).build()
         surface.surfaceProvider = view.surfaceProvider
+        previewUseCase = surface
         val recorder = Recorder.Builder().setQualitySelector(QualitySelector.from(Quality.HD, FallbackStrategy.lowerQualityOrHigherThan(Quality.HD))).build()
         val video = VideoCapture.Builder(recorder).setTargetRotation(Surface.ROTATION_0).setMirrorMode(MirrorMode.MIRROR_MODE_OFF).build()
         if (dual.value) {
@@ -131,12 +147,12 @@ class RecordingController(private val context: Context, private val repo: ClipRe
             try {
                 withContext(Dispatchers.IO) { if (repo.clean(settings())) notice("尚未达到存储目标，请导出或清理素材；已保护片段不会自动删除")
                     require(repo.freeBytes > 1_000_000_000) { "剩余空间低于 1 GB，请先导出或清理素材" } }
-                if (!intent.continueSession || !foreground || token != generation) return@launch
+                if (!intent.continueSession || !canCapture || token != generation) return@launch
                 if (capture == null) bind(token)
-                if (!intent.continueSession || !foreground || token != generation) { if (token == generation) state.value = RecorderState.IDLE; return@launch }
+                if (!intent.continueSession || !canCapture || token != generation) { if (token == generation) state.value = RecorderState.IDLE; return@launch }
                 val current = withContext(Dispatchers.IO) { repo.create() }
                 clip = current
-                if (!intent.continueSession || !foreground || token != generation) {
+                if (!intent.continueSession || !canCapture || token != generation) {
                     withContext(Dispatchers.IO) { repo.discardUnstarted(current) }
                     if (token == generation) state.value = RecorderState.IDLE
                     return@launch
@@ -150,7 +166,7 @@ class RecordingController(private val context: Context, private val repo: ClipRe
                     .withAudioEnabled().start(ContextCompat.getMainExecutor(context)) { event ->
                         when (event) {
                             is VideoRecordEvent.Start -> {
-                                if (!intent.continueSession || !foreground) { recording?.stop(); return@start }
+                                if (!intent.continueSession || !canCapture) { recording?.stop(); return@start }
                                 state.value = RecorderState.RECORDING
                                 segmentStarted = android.os.SystemClock.elapsedRealtime(); lastStatus = segmentStarted; lastMediaDuration = 0L
                             }
@@ -170,7 +186,7 @@ class RecordingController(private val context: Context, private val repo: ClipRe
                                     if (!ok) { intent.stop(); notice(error ?: "文件音视频检查未通过，原文件已保护") }
                                     withContext(Dispatchers.IO) { runCatching { repo.clean(settings()) } }
                                     state.value = if (ok) RecorderState.IDLE else RecorderState.ERROR
-                                    if (intent.mayContinue(foreground, ok)) beginSegment() else { intent.stop(); afterClip?.invoke() }
+                                    if (intent.mayContinue(foreground, ok, backgroundRecording.value)) beginSegment() else { intent.stop(); afterClip?.invoke() }
                                   } catch (e: Exception) {
                                     intent.stop(); state.value = RecorderState.ERROR
                                     notice("录像已结束，但索引保存失败；原文件保留，请检查空间并重启恢复")
@@ -219,6 +235,9 @@ class RecordingController(private val context: Context, private val repo: ClipRe
         if (recording != null) finishSegment()
         else if (state.value != RecorderState.RECOVERING && state.value != RecorderState.FINALIZING) { generation++; if (!binding) state.value = RecorderState.IDLE }
     }
-    fun background() { foreground = false; stop(if (active) "已离开前台，录像停止；返回后请手动开始" else null) }
+    fun background() {
+        foreground = false
+        if (!backgroundRecording.value) stop(if (active) "持续录像服务不可用，离开前台已停止；返回后请手动开始" else null)
+    }
     fun release() { stop(); provider?.unbindAll() }
 }

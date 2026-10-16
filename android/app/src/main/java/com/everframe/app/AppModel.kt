@@ -2,7 +2,9 @@ package com.everframe.app
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
+import androidx.core.content.ContextCompat
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.BatteryManager
@@ -43,7 +45,7 @@ class AppModel(application: Application) : AndroidViewModel(application) {
         thermalStatus = status
         if (status >= PowerManager.THERMAL_STATUS_SEVERE) { analysisJob?.cancel(); warn("设备温度较高，转写与 AI 已暂停") }
         if (status >= PowerManager.THERMAL_STATUS_CRITICAL) { stopWeb(); warn("设备温度过高，电脑控制已暂停") }
-        if (status >= PowerManager.THERMAL_STATUS_EMERGENCY) recorder.stop("设备严重过热，已停止记录")
+        if (status >= PowerManager.THERMAL_STATUS_EMERGENCY) { recordingServicePending = false; recorder.stop("设备严重过热，已停止记录") }
     } else null
     init {
         if (Build.VERSION.SDK_INT >= 29 && thermalListener != null) { power.addThermalStatusListener(context.mainExecutor, thermalListener); thermalStatus = power.currentThermalStatus }
@@ -71,7 +73,7 @@ class AppModel(application: Application) : AndroidViewModel(application) {
     fun notice(text: String) { message.value = text }
     fun warn(text: String) { warning.value = text }
     fun foreground() { recorder.foreground = true; refreshWeb(); scheduleAnalysis() }
-    fun background() { recorder.background(); analysisJob?.cancel(); stopWeb() }
+    fun background() { recordingServicePending = false; recorder.background(); analysisJob?.cancel(); stopWeb() }
     fun attempt(block: () -> Unit) { try { block() } catch (e: Exception) { notice(safeError(e, "操作失败")) } }
     fun updateSettings(value: Settings) {
         value.validated(); atomicWrite(File(root, "settings.json"), json.encodeToString(value)); settings.value = value
@@ -141,10 +143,22 @@ class AppModel(application: Application) : AndroidViewModel(application) {
             catch (e: Exception) { analysisState.value = safeError(e, "分析不可用") }
         }
     }
+    fun stopRecording() { recordingServicePending = false; recorder.stop() }
+    var recordingServicePending = false
     fun startRecording() {
         if (!recovered) { notice("素材尚未完成恢复，请等待或检查空间后重启"); return }
         if (thermalStatus >= 5) { notice("设备严重过热，请冷却后再开始"); return }
-        analysisJob?.cancel(); recorder.start()
+        if (recordingServicePending || recorder.active || !recorder.foreground) return
+        if (!recorder.permissions()) { notice("请先允许摄像头和麦克风权限"); return }
+        analysisJob?.cancel()
+        recordingServicePending = true
+        try { ContextCompat.startForegroundService(context, Intent(context, RecordingService::class.java)) }
+        catch (_: Exception) { startRecordingFallback() }
+    }
+    fun startRecordingFallback() {
+        recordingServicePending = false
+        warn("系统未允许持续录像服务，已改为前台录制；无操作1分钟自动调暗，锁屏或离开应用会停录")
+        if (recorder.foreground) recorder.start()
     }
     fun generateDaily() {
         if (analysisJob?.isActive == true) { notice("请等待当前分析完成"); return }
@@ -206,7 +220,7 @@ class AppModel(application: Application) : AndroidViewModel(application) {
                     put("freeBytes", repo.freeBytes); put("ai", analysisState.value); put("message", message.value)
                 })
                 "POST" to "/api/start" -> { if (!recorder.permissions()) throw HTTPError(409, "请先在手机授予摄像头和麦克风权限"); startRecording() }
-                "POST" to "/api/stop" -> recorder.stop()
+                "POST" to "/api/stop" -> stopRecording()
                 "POST" to "/api/keep" -> repo.keep(body.getValue("minutes").jsonPrimitive.int)
                 "GET" to "/api/clips" -> return encoded(json.encodeToJsonElement(repo.clips.value.take(500)))
                 "GET" to "/api/settings" -> return encoded(json.encodeToJsonElement(settings.value))

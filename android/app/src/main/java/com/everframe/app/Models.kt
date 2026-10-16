@@ -56,7 +56,7 @@ class RecordingIntent {
     var continueSession = false; private set
     fun start() { continueSession = true }
     fun stop() { continueSession = false }
-    fun mayContinue(foreground: Boolean, successful: Boolean) = continueSession && foreground && successful
+    fun mayContinue(foreground: Boolean, successful: Boolean, serviceActive: Boolean = false) = continueSession && (foreground || serviceActive) && successful
 }
 @Serializable data class TranscriptSegment(val start: Double, val end: Double, val text: String)
 @Serializable data class Transcript(val clipID: String, val locale: String = "zh-CN", val segments: List<TranscriptSegment>) {
@@ -83,3 +83,12 @@ class RecordingIntent {
 @Serializable data class DailyPayload(val summary: String, val accomplishments: List<String>, val ideas: List<String>, val reviews: List<DailyReview>)
 @Serializable data class DailySummary(val id: String, val generatedAt: String = nowISO(), val recordedSeconds: Double,
     val summary: String, val accomplishments: List<String>, val ideas: List<String>, val reviews: List<DailyReview>)
+
+// 使用单调时钟，触摸后从头计算一分钟；停止或退后台则取消。
+class RecordingIdleDeadline {
+    var deadline: Long? = null; private set
+    fun reset(recording: Boolean, active: Boolean, now: Long) {
+        deadline = if (recording && active) now + 60_000 else null
+    }
+    fun expired(now: Long) = deadline?.let { now >= it } ?: false
+}

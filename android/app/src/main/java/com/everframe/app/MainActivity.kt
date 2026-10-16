@@ -6,13 +6,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings as SystemSettings
 import android.view.WindowManager
+import android.view.MotionEvent
 import android.widget.MediaController
 import android.widget.VideoView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -44,17 +44,24 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class MainActivity : ComponentActivity() {
-    private val model: AppModel by viewModels()
+    private val model get() = (application as EverFrameApplication).model
+    private val screenPower by lazy { RecordingScreenPower(window) }
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (screenPower.onTouch(event)) return true
+        return super.dispatchTouchEvent(event)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { EverFrameTheme { EverFrame(model) } }
+        setContent { EverFrameTheme { EverFrame(model, screenPower) } }
         lifecycleScope.launch { model.recorder.state.collect { state ->
+            screenPower.setRecording(model.recorder.sessionRequested || state == RecorderState.RECORDING)
             if (state in listOf(RecorderState.PREPARING, RecorderState.RECORDING, RecorderState.FINALIZING)) window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             else window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         } }
     }
-    override fun onStart() { super.onStart(); model.foreground() }
-    override fun onStop() { model.background(); super.onStop() }
+    override fun onStart() { super.onStart(); screenPower.setActive(true); model.foreground() }
+    override fun onStop() { screenPower.setActive(false); model.background(); super.onStop() }
+    override fun onDestroy() { screenPower.setActive(false); super.onDestroy() }
 }
 @Composable fun EverFrameTheme(content: @Composable () -> Unit) {
     MaterialTheme(colorScheme = lightColorScheme(primary = Color(0xFF315C51), secondary = Color(0xFF626E64),
@@ -66,7 +73,7 @@ fun statusLabel(value: String) = when (value) { "pending" -> "等待"; "running"
 fun gb(bytes: Long) = "%.2f GB".format(bytes / 1e9)
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable fun EverFrame(model: AppModel) {
+@Composable fun EverFrame(model: AppModel, screenPower: RecordingScreenPower) {
     val context = LocalContext.current
     val activity = context as ComponentActivity
     val state by model.recorder.state.collectAsStateWithLifecycle()
@@ -105,14 +112,23 @@ fun gb(bytes: Long) = "%.2f GB".format(bytes / 1e9)
             } catch (e: Exception) { model.notice(e.message ?: "读取转写失败") }
         }
     }
+    val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+        // 拒绝通知权限仍可运行前台服务，系统会在“活动应用”中显示服务。
+        model.startRecording()
+    }
+    fun beginRecording() {
+        if (android.os.Build.VERSION.SDK_INT >= 33 && androidx.core.content.ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED)
+            notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+        else model.startRecording()
+    }
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
         if (result.values.all { it } && model.recorder.permissions()) {
-            if (pendingStart) model.startRecording() else model.recorder.configure()
+            if (pendingStart) beginRecording() else model.recorder.configure()
         } else model.notice("请允许摄像头与麦克风；拒绝后可到系统设置开启")
         pendingStart = false
     }
     fun request(start: Boolean) {
-        if (model.recorder.permissions()) { if (start) model.startRecording() else model.recorder.configure() }
+        if (model.recorder.permissions()) { if (start) beginRecording() else model.recorder.configure() }
         else { pendingStart = start; permission.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)) }
     }
     Scaffold(bottomBar = {
@@ -138,7 +154,7 @@ fun gb(bytes: Long) = "%.2f GB".format(bytes / 1e9)
             Box(Modifier.weight(1f)) {
                 // 保持取景 Surface 存活；切换功能页不重绑正在写入的摄像头。
                 RecorderPage(model, Modifier.fillMaxSize().alpha(if (tab == 0) 1f else 0f), visible = tab == 0,
-                    onPreview = { request(false) }, onStart = { request(true) })
+                    onPreview = { request(false) }, onStart = { request(true) }, onDim = { screenPower.dim() })
                 when (tab) {
                     1 -> ClipsPage(model, clips, onPlay = { player = it to 0.0 }, onDelete = { deleting = it },
                         onExport = { model.repo.pin(it.id); exportClip = it; export.launch("EverFrame-${it.id}.mp4") }, onImport = { importClip = it; importer.launch(arrayOf("application/json", "text/plain")) })
@@ -163,8 +179,9 @@ fun gb(bytes: Long) = "%.2f GB".format(bytes / 1e9)
         }, confirmButton = { TextButton(onClick = { player = null }) { Text("关闭播放") } })
     }
 }
-@Composable private fun RecorderPage(model: AppModel, modifier: Modifier, visible: Boolean, onPreview: () -> Unit, onStart: () -> Unit) {
+@Composable private fun RecorderPage(model: AppModel, modifier: Modifier, visible: Boolean, onPreview: () -> Unit, onStart: () -> Unit, onDim: () -> Unit) {
     val state by model.recorder.state.collectAsStateWithLifecycle()
+    val backgroundRecording by model.recorder.backgroundRecording.collectAsStateWithLifecycle()
     val elapsed by model.recorder.elapsed.collectAsStateWithLifecycle()
     val dual by model.recorder.dual.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -184,12 +201,15 @@ fun gb(bytes: Long) = "%.2f GB".format(bytes / 1e9)
             } })
             if (state == RecorderState.IDLE && elapsed == 0L) TextButton(onClick = onPreview, enabled = visible) { Text("点击开启取景", color = Color.White) }
         }
-        Text("仅前台有声录像 · 默认720p · 分段间可能有短暂间隔", style = MaterialTheme.typography.labelSmall)
+        Text(if (backgroundRecording) "持续录像已开启，可按电源键锁屏 · 默认720p" else "前台有声录像 · 无操作1分钟自动调暗 · 默认720p", style = MaterialTheme.typography.labelSmall)
+        OutlinedButton(onClick = onDim, enabled = visible, modifier = Modifier.fillMaxWidth()) {
+            Icon(Icons.Outlined.BrightnessLow, null); Spacer(Modifier.width(8.dp)); Text("屏幕最低亮度")
+        }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             listOf(10, 30, 60).forEach { minutes -> OutlinedButton(onClick = { model.attempt { model.repo.keep(minutes); model.notice("已保留与最近${minutes}分钟相交的完整片段") } }, modifier = Modifier.weight(1f), enabled = visible && state != RecorderState.RECOVERING) { Text("保留${minutes}分", style = MaterialTheme.typography.labelSmall) } }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            if (model.recorder.active) Button(onClick = { model.recorder.stop() }, modifier = Modifier.weight(1f), enabled = visible, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) {
+            if (model.recorder.active) Button(onClick = { model.stopRecording() }, modifier = Modifier.weight(1f), enabled = visible, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) {
                 Icon(Icons.Outlined.Stop, null); Text(if (state == RecorderState.FINALIZING) "取消续录，等待保存" else "停止记录")
             } else Button(onClick = onStart, modifier = Modifier.weight(1f), enabled = visible && state != RecorderState.RECOVERING) { Icon(Icons.Outlined.FiberManualRecord, null); Text("开始记录") }
             OutlinedIconButton(enabled = visible && !model.recorder.active, onClick = { model.recorder.configure(switchLens = true) }) { Icon(Icons.Outlined.Cameraswitch, "切换前后镜头") }

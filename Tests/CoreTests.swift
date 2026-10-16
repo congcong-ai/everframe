@@ -12,6 +12,15 @@ import CoreImage
         func rejects(_ name: String, _ block: () throws -> Void) throws {
             var rejected = false; do { try block() } catch { rejected = true }; try check(rejected, name)
         }
+        var idle = RecordingIdleDeadline()
+        idle.reset(recording: true, active: true, now: 100)
+        try check(!idle.expired(at: 159.999) && idle.expired(at: 160), "录制无操作满60秒才调暗")
+        idle.reset(recording: true, active: true, now: 150)
+        try check(!idle.expired(at: 160) && idle.expired(at: 210), "触摸或恢复亮度后重新计时")
+        idle.reset(recording: false, active: true, now: 200)
+        try check(!idle.expired(at: 1000), "停止后取消自动调暗")
+        idle.reset(recording: true, active: false, now: 200)
+        try check(!idle.expired(at: 1000), "离开前台后取消自动调暗")
         var recordingIntent = RecordingContinuation()
         try check(!recordingIntent.requestCameraSwitch(), "待机不能排入录制续接切换")
         recordingIntent.start()

@@ -23,3 +23,8 @@ keystore.properties
 captures/
 .externalNativeBuild/
 .cxx/
+
+# 本地安装包和校验文件；只提交目录使用说明
+/artifacts/*
+!/artifacts/README.md
+*.apk

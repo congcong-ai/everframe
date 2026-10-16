@@ -11,8 +11,8 @@ android {
         applicationId = "com.everframe.app"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.1.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true; buildConfig = true }
@@ -30,6 +30,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.4")
+    implementation("androidx.lifecycle:lifecycle-service:2.9.4")
     implementation("androidx.core:core-ktx:1.17.0")
     for (module in listOf("camera-camera2", "camera-lifecycle", "camera-video", "camera-view")) {
         implementation("androidx.camera:$module:1.6.2")

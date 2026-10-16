@@ -43,6 +43,24 @@ class CoreTests {
         val intent = RecordingIntent(); intent.start()
         assertFalse(intent.mayContinue(false, true)); assertFalse(intent.mayContinue(true, false))
     }
+    @Test fun `持续服务允许锁屏后跨段续录但停止和失败优先`() {
+        val intent = RecordingIntent(); intent.start()
+        assertTrue(intent.mayContinue(false, true, serviceActive = true))
+        assertFalse(intent.mayContinue(false, true, serviceActive = false))
+        assertFalse(intent.mayContinue(false, false, serviceActive = true))
+        intent.stop()
+        assertFalse(intent.mayContinue(false, true, serviceActive = true))
+        assertFalse(intent.mayContinue(true, true, serviceActive = true))
+    }
+    @Test fun `录制空闲一分钟及触摸重置停止后台取消`() {
+        val idle = RecordingIdleDeadline()
+        idle.reset(true, true, 100_000)
+        assertFalse(idle.expired(159_999)); assertTrue(idle.expired(160_000))
+        idle.reset(true, true, 150_000)
+        assertFalse(idle.expired(160_000)); assertTrue(idle.expired(210_000))
+        idle.reset(false, true, 200_000); assertFalse(idle.expired(1_000_000))
+        idle.reset(true, false, 200_000); assertFalse(idle.expired(1_000_000))
+    }
     @Test fun `默认关闭AI与实验转写`() {
         assertFalse(Settings().aiEnabled); assertFalse(Settings().experimentalSystemSpeech)
     }

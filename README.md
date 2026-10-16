@@ -6,9 +6,11 @@ EverFrame 是一款本机优先的原生录像与工作时间轴应用，适用�
 
 项目仍在开发中。编译通过不代表相机、麦克风、音轨、双摄或长时间录像已通过所有设备的实机验收。使用前请阅读下方的已知限制和对应平台测试手册。
 
-**Android：** [下载 v0.1.0 APK（预览版）](https://github.com/congcong-ai/everframe/releases/download/v0.1.0/everframe-android-v0.1.0-debug.apk)。这是用于直接安装体验的开发签名版本。
+**Android：** [下载 v0.1.1 APK（预览版）](https://github.com/congcong-ai/everframe/releases/download/v0.1.1/everframe-android-v0.1.1-debug.apk)。这是用于直接安装体验的开发签名版本。
 
 **iOS：** 正在申请 Apple Developer Program 开发者账号，后续计划上架 App Store。
+
+本地安装包统一放在 [`artifacts/`](artifacts/README.md)，运行 `./scripts/package.sh` 可重新生成；二进制不进入 Git，Android APK 通过 GitHub Releases 下载。
 
 ## 功能
 
@@ -70,7 +72,7 @@ macOS 上可以运行 iOS 构建和核心测试：
 
 ## 隐私与安全
 
-- 录像由用户明确开始，默认保存在设备本地；应用没有云端账号、后台录像或自动上传原始音视频的功能。
+- 录像由用户明确开始，默认保存在设备本地；应用没有云端账号或自动上传原始音视频的功能。iOS 切后台／锁屏停录；Android 在前台启动持续录像服务后支持锁屏录像，系统拒绝服务时回退前台录制。
 - AI 默认关闭。启用并配置 API Key 后，转写文字和分析所需文字会发送给用户配置的 DeepSeek 服务；请勿输入不适合外发的内容。
 - iOS 语音转写优先使用 Apple 设备端识别。若需使用 Apple 在线语音识别，用户必须在系统权限和应用设置中明确允许。
 - 局域网电脑控制使用 HTTP 明文，只适合可信的局域网；不要在不可信或公共网络中启用。

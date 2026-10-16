@@ -24,6 +24,9 @@ import SwiftUI
     }
 }
 struct RootView: View {
+    @EnvironmentObject private var app: AppModel
+    @Environment(\.scenePhase) private var phase
+    @StateObject private var screenPower = RecordingScreenPower()
     var body: some View {
         TabView {
             RecorderView().tabItem { Label("记录", systemImage: "record.circle") }
@@ -31,6 +34,11 @@ struct RootView: View {
             ClipsView().tabItem { Label("素材", systemImage: "film") }
             SettingsView().tabItem { Label("设置", systemImage: "slider.horizontal.3") }
         }.tint(.everGreen)
+            .environmentObject(screenPower)
+            .background(ScreenInteractionObserver(power: screenPower))
+            .onChange(of: app.recording) { screenPower.update(recording: $0, active: phase == .active) }
+            .onChange(of: phase) { screenPower.update(recording: app.recording, active: $0 == .active) }
+            .onDisappear { screenPower.update(recording: false, active: false) }
     }
 }
 extension Color { static let everGreen = Color(red: 0.08, green: 0.37, blue: 0.28) }

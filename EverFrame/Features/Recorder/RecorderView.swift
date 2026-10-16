@@ -5,6 +5,7 @@ struct RecorderView: View {
     @EnvironmentObject private var clips: ClipRepository
     @EnvironmentObject private var timeline: TimelineRepository
     @EnvironmentObject private var analysis: AnalysisQueue
+    @EnvironmentObject private var screenPower: RecordingScreenPower
     @State private var details = false
     @Environment(\.dynamicTypeSize) private var typeSize
 
@@ -83,6 +84,9 @@ struct RecorderView: View {
 
     private var controls: some View {
         VStack(spacing: 8) {
+            Button { screenPower.dim() } label: {
+                Label("屏幕最低亮度", systemImage: "sun.min").font(.subheadline).frame(maxWidth: .infinity, minHeight: 44)
+            }.buttonStyle(.bordered).accessibilityHint("轻触屏幕恢复；录制中无操作一分钟自动调暗")
             HStack(spacing: 12) {
                 Button {
                     if app.recording { app.stop() } else { Task { await app.start() } }
@@ -150,7 +154,7 @@ struct RecorderView: View {
                 }
                 Section {
                     NavigationLink("今天值得回看 · \(reviewClips.count) 个") { ReviewList(clips: reviewClips).navigationTitle("今天值得回看") }
-                    Text("固定手机、接通电源，可手动调低亮度。切到后台会停止录像并保存当前文件；回到前台后需手动开始。")
+                    Text("录制中无操作1分钟自动降至最低亮度，也可点“屏幕最低亮度”。轻触恢复原亮度，首次触摸不会操作底下的按钮。调暗不等于锁屏；锁屏或切后台仍会停止录像并保存当前文件，返回后需手动开始。")
                 }
             }.navigationTitle("记录详情").navigationBarTitleDisplayMode(.inline)
                 .toolbar { Button("完成") { details = false } }
@@ -175,3 +179,96 @@ struct RecorderView: View {
 }
 func bytesText(_ bytes: Int64) -> String { ByteCountFormatter.string(fromByteCount: bytes, countStyle: .decimal) }
 func durationText(_ seconds: Double) -> String { let m = Int(seconds)/60; return "\(m/60)小时\(m%60)分钟" }
+
+// 仅在本应用前台改变亮度；系统锁屏仍由 iOS 管理。
+@MainActor final class RecordingScreenPower: ObservableObject {
+    private weak var window: UIWindow?
+    private var originalBrightness: CGFloat?
+    private var cover: UIControl?
+    private var idle = RecordingIdleDeadline()
+    private var deadline: Timer?
+    private var recording = false
+    private var active = true
+
+    func attach(_ window: UIWindow) { self.window = window }
+    func update(recording: Bool, active: Bool) {
+        self.recording = recording; self.active = active
+        restore()
+    }
+    func interaction() {
+        deadline?.invalidate(); deadline = nil
+        idle.reset(recording: recording && originalBrightness == nil, active: active, now: ProcessInfo.processInfo.systemUptime)
+        guard idle.deadline != nil else { return }
+        deadline = Timer.scheduledTimer(withTimeInterval: 60, repeats: false) { [weak self] _ in
+            Task { @MainActor in
+                guard let self, self.idle.expired(at: ProcessInfo.processInfo.systemUptime) else { return }
+                self.dim()
+            }
+        }
+    }
+    func dim() {
+        guard active, originalBrightness == nil, let window else { return }
+        deadline?.invalidate(); deadline = nil
+        originalBrightness = window.screen.brightness
+        window.screen.brightness = 0
+        let cover = UIButton(type: .custom)
+        cover.frame = window.bounds
+        cover.isAccessibilityElement = true
+        cover.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        cover.backgroundColor = .black
+        cover.accessibilityLabel = "屏幕已调至最低亮度，轻点恢复"
+        cover.accessibilityTraits = .button
+        cover.addTarget(self, action: #selector(restore), for: .touchUpInside)
+        let label = UILabel()
+        label.text = "轻触恢复亮度 · 录制状态不变"
+        label.textColor = .lightGray; label.font = .preferredFont(forTextStyle: .footnote)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        cover.addSubview(label)
+        NSLayoutConstraint.activate([label.centerXAnchor.constraint(equalTo: cover.centerXAnchor), label.centerYAnchor.constraint(equalTo: cover.centerYAnchor)])
+        window.addSubview(cover); self.cover = cover
+    }
+    @objc func restore() {
+        if let brightness = originalBrightness { window?.screen.brightness = brightness }
+        originalBrightness = nil; cover?.removeFromSuperview(); cover = nil
+        interaction()
+    }
+}
+
+private final class ScreenTouchObserver: UIGestureRecognizer, UIGestureRecognizerDelegate {
+    var activity: (() -> Void)?
+    init(activity: @escaping () -> Void) {
+        self.activity = activity
+        super.init(target: nil, action: nil)
+        cancelsTouchesInView = false; delegate = self
+    }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) { activity?() }
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) { activity?() }
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) { activity?(); state = .failed }
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) { activity?(); state = .failed }
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool { true }
+}
+
+struct ScreenInteractionObserver: UIViewRepresentable {
+    let power: RecordingScreenPower
+    final class ObserverView: UIView {
+        var power: RecordingScreenPower?
+        private var observer: ScreenTouchObserver?
+        private weak var observedWindow: UIWindow?
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            if let observer { observedWindow?.removeGestureRecognizer(observer) }
+            guard let window, let power else { return }
+            power.attach(window)
+            let observer = ScreenTouchObserver { [weak power] in power?.interaction() }
+            window.addGestureRecognizer(observer)
+            observedWindow = window; self.observer = observer
+        }
+        func detach() {
+            if let observer { observedWindow?.removeGestureRecognizer(observer) }
+            power?.update(recording: false, active: false)
+        }
+    }
+    func makeUIView(context: Context) -> ObserverView { let view = ObserverView(); view.power = power; view.isUserInteractionEnabled = false; return view }
+    func updateUIView(_ uiView: ObserverView, context: Context) {}
+    static func dismantleUIView(_ uiView: ObserverView, coordinator: ()) { uiView.detach() }
+}
