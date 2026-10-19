@@ -1,0 +1,13 @@
+{
+  "name": "everframe",
+  "private": true,
+  "packageManager": "pnpm@10.18.3",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "node website/dev.mjs",
+    "test": "node --test website/tests/*.test.mjs",
+    "server:install": "bash scripts/install-remote.sh",
+    "server:deploy": "bash scripts/deploy-remote.sh",
+    "server:ports": "node scripts/remote.mjs ports"
+  }
+}

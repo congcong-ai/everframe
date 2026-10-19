@@ -28,3 +28,7 @@ captures/
 /artifacts/*
 !/artifacts/README.md
 *.apk
+
+# 部署专用本地配置
+.deploy.env
+node_modules/

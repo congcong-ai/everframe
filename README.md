@@ -84,6 +84,21 @@ EverFrame 关注手机本地有声录像、分段存储与素材保留，适合�
 
 面向用户的中文官网位于 [`website/`](website/README.md)，包含使用场景、开源与隐私说明，以及 GitCode Android 一键下载。运行 `pnpm --dir website dev` 后访问 http://localhost:3000；开发入口先清理端口。
 
+## 官网部署
+
+参考 FDE 的原生部署方式，使用 Node.js、独立用户下的 PM2、systemd 自启和 Nginx HTTPS。官网部署与手机应用安装分开；不需要数据库或 Docker。
+
+```sh
+pnpm install --frozen-lockfile
+cp .deploy.env.example .deploy.env  # 首次配置；已有配置时不要覆盖
+pnpm server:ports                 # 只读审计服务器端口
+# 确认空闲端口后，填写 .deploy.env 的 DEPLOY_WEB_PORT
+pnpm server:install               # 首次安装基础设施、签发 HTTPS，并发布官网
+pnpm server:deploy                # 日常更新：测试、打包、上传、发布与健康检查
+```
+
+默认服务器与 FDE 国内站相同，官网独立目录为 `/var/www/everframe`；运行配置保存在服务器 `/var/www/everframe/shared/.env`。重复首次安装会直接跳过，后续更新统一使用 `pnpm server:deploy`。部署配置、失败恢复和验收命令见[官网部署文档](docs/DEPLOYMENT.md)。
+
 ## 功能
 
 - **录像与分段：** 用户手动开始和停止；支持前后摄像头、自动分段和预览。
