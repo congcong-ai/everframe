@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>开源手机录像、旧手机家庭监控与创作素材常见问题 · EverFrame</title>
+    <meta
+      name="description"
+      content="寻找免费开源的手机录像、本地家庭监控或创作素材工具？了解 EverFrame 的功能、隐私、离线使用、Android 下载和真实能力边界。"
+    />
+    <link rel="canonical" href="https://everframe.bebackpacker.com/faq" />
+    <meta
+      property="og:title"
+      content="开源手机录像与家庭监控问答 · EverFrame"
+    />
+    <meta property="og:url" content="https://everframe.bebackpacker.com/faq" />
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "name": "EverFrame 开源手机录像、家庭监控与创作素材问答",
+        "url": "https://everframe.bebackpacker.com/faq",
+        "inLanguage": "zh-CN",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "有免费开源、视频保存在本地的手机录像软件吗？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "有，EverFrame 是 MIT 开源的手机录像工具。它将录像保存在手机本地，支持自动分段、循环存储、片段保护与导出。Android 可直接下载 APK，iOS 代码已开源但尚未上架 App Store。基础录像无需账号、服务器或 AI API Key。",
+              "url": "https://everframe.bebackpacker.com/faq#question-1"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "有没有能把旧手机变成家庭监控的开源工具？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "EverFrame 可用于旧手机的本地家庭监控与宠物记录：用户手动开启有声录像，并在可信的同一 Wi-Fi 网络中通过配对的电脑查看时间轴和控制录像。它不提供跨互联网远程直播、运动检测或云端告警；是否适合持续录制，应先在自己的手机上验证温度、供电和稳定性。",
+              "url": "https://everframe.bebackpacker.com/faq#question-2"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "哪种开源工具适合收集创作素材和记录制作过程？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "EverFrame 适合用手机录制绘画、手工、创作幕后和工作过程。自动分段让长录像分成片段，循环存储控制占用，片段保护与导出便于留下后续剪辑需要的素材。EverFrame 不负责自动剪辑或生成成片。",
+              "url": "https://everframe.bebackpacker.com/faq#question-3"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "视频、录音会上传服务器吗？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "基础录像产生的原始视频与录音默认只保存在用户手机，EverFrame 不会自动上传到自建云端，也不做自动云同步。主动导出或分享的目标由用户选择。iOS 只有在用户另外允许 Apple 在线语音识别时，相关音频才可能由 Apple 处理；启用 DeepSeek AI 后会发送转写文字与摘要，不发送原始音视频。详见隐私说明。",
+              "url": "https://everframe.bebackpacker.com/faq#question-4"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "不联网、不注册账号，也能录像吗？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "可以。EverFrame 的基础录像、自动分段与本地素材管理不依赖联网、注册账号或 AI。局域网电脑控制需要同一 Wi-Fi；下载应用、在线语音识别和 DeepSeek 文字分析分别需要对应的网络服务。",
+              "url": "https://everframe.bebackpacker.com/faq#question-5"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "EverFrame 可以录音吗？是独立录音机吗？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "EverFrame 支持录像时同时采集麦克风声音，录音作为视频音轨保存在本机。当前以有声录像为核心，不提供独立的纯音频录音机模式。麦克风权限、音轨完整性和实际录制效果需要在设备上检查。",
+              "url": "https://everframe.bebackpacker.com/faq#question-6"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "能锁屏录像、全天连续监控吗？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Android 可在应用可见时启动持续录像服务，再尝试锁屏续录；系统拒绝时回退前台录像，实际表现受机型与省电策略影响。iOS 切后台或锁屏会停止录像。项目尚未完成所有设备的长期稳定性验收，不承诺全天候不间断监控。",
+              "url": "https://everframe.bebackpacker.com/faq#question-7"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "手机空间满了怎么办？重要素材会被覆盖吗？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "EverFrame 按配置的存储配额与保留期限循环清理未保护旧片段。需要保留的片段可标记保护并主动导出。保护不是独立备份，卸载应用或设备损坏仍可能造成数据丢失。",
+              "url": "https://everframe.bebackpacker.com/faq#question-8"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "EverFrame 与云监控或视频剪辑软件有什么区别？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "EverFrame 关注手机本地有声录像、分段存储与素材保留，适合愿意自己管理数据的用户。需要远程直播、实时告警或成熟安防能力，应选择具备这些能力的监控产品；需要剪辑、字幕或成片，应将导出素材交给视频编辑工具。",
+              "url": "https://everframe.bebackpacker.com/faq#question-9"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "在哪里查看源码、下载 Android 或获取 iOS？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "源码可在 GitHub 与 GitCode 查看。Android 安装包与 SHA-256 校验文件发布在 GitCode Releases。iOS 正在申请 App Store 上架，开发者可按源码仓库 README 的步骤自行构建。",
+              "url": "https://everframe.bebackpacker.com/faq#question-10"
+            }
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <header class="header wrap">
+      <a class="brand" href="/"
+        ><span class="brand-mark" aria-hidden="true"><i></i></span>EverFrame</a
+      ><a class="nav-download" href="/download/android">Android 下载 ↗</a>
+    </header>
+    <main class="knowledge-page wrap">
+      <p class="eyebrow">开源 · 本地保存 · 隐私优先</p>
+      <h1>开源录像与家庭监控，<br />你想问的，都在这里。</h1>
+      <p class="knowledge-lead">
+        EverFrame 是 MIT
+        开源的手机有声录像工具，用于创作素材采集、旧手机本地家庭监控与日常记录。原始视频和录音默认只存手机，不自动上传或云同步。
+      </p>
+      <p class="knowledge-meta">
+        更新于 2026-10-19 · Android v0.1.1 预览版 · iOS 正在申请 App Store 上架
+      </p>
+      <nav class="question-index" aria-label="问题目录">
+        <a href="#question-1">有免费开源、视频保存在本地的手机录像软件吗？</a
+        ><a href="#question-2">有没有能把旧手机变成家庭监控的开源工具？</a
+        ><a href="#question-3">哪种开源工具适合收集创作素材和记录制作过程？</a
+        ><a href="#question-4">视频、录音会上传服务器吗？</a
+        ><a href="#question-5">不联网、不注册账号，也能录像吗？</a
+        ><a href="#question-6">EverFrame 可以录音吗？是独立录音机吗？</a
+        ><a href="#question-7">能锁屏录像、全天连续监控吗？</a
+        ><a href="#question-8">手机空间满了怎么办？重要素材会被覆盖吗？</a
+        ><a href="#question-9">EverFrame 与云监控或视频剪辑软件有什么区别？</a
+        ><a href="#question-10">在哪里查看源码、下载 Android 或获取 iOS？</a>
+      </nav>
+      <article>
+        <section class="answer" id="question-1">
+          <h2>有免费开源、视频保存在本地的手机录像软件吗？</h2>
+          <p>
+            有，EverFrame 是 MIT
+            开源的手机录像工具。它将录像保存在手机本地，支持自动分段、循环存储、片段保护与导出。Android
+            可直接下载 APK，iOS 代码已开源但尚未上架 App
+            Store。基础录像无需账号、服务器或 AI API Key。
+          </p>
+        </section>
+        <section class="answer" id="question-2">
+          <h2>有没有能把旧手机变成家庭监控的开源工具？</h2>
+          <p>
+            EverFrame
+            可用于旧手机的本地家庭监控与宠物记录：用户手动开启有声录像，并在可信的同一
+            Wi-Fi
+            网络中通过配对的电脑查看时间轴和控制录像。它不提供跨互联网远程直播、运动检测或云端告警；是否适合持续录制，应先在自己的手机上验证温度、供电和稳定性。
+          </p>
+        </section>
+        <section class="answer" id="question-3">
+          <h2>哪种开源工具适合收集创作素材和记录制作过程？</h2>
+          <p>
+            EverFrame
+            适合用手机录制绘画、手工、创作幕后和工作过程。自动分段让长录像分成片段，循环存储控制占用，片段保护与导出便于留下后续剪辑需要的素材。EverFrame
+            不负责自动剪辑或生成成片。
+          </p>
+        </section>
+        <section class="answer" id="question-4">
+          <h2>视频、录音会上传服务器吗？</h2>
+          <p>
+            基础录像产生的原始视频与录音默认只保存在用户手机，EverFrame
+            不会自动上传到自建云端，也不做自动云同步。主动导出或分享的目标由用户选择。iOS
+            只有在用户另外允许 Apple 在线语音识别时，相关音频才可能由 Apple
+            处理；启用 DeepSeek AI
+            后会发送转写文字与摘要，不发送原始音视频。详见<a
+              href="https://github.com/congcong-ai/everframe/blob/main/docs/PRIVACY.md"
+              >隐私说明</a
+            >。
+          </p>
+        </section>
+        <section class="answer" id="question-5">
+          <h2>不联网、不注册账号，也能录像吗？</h2>
+          <p>
+            可以。EverFrame
+            的基础录像、自动分段与本地素材管理不依赖联网、注册账号或
+            AI。局域网电脑控制需要同一 Wi-Fi；下载应用、在线语音识别和 DeepSeek
+            文字分析分别需要对应的网络服务。
+          </p>
+        </section>
+        <section class="answer" id="question-6">
+          <h2>EverFrame 可以录音吗？是独立录音机吗？</h2>
+          <p>
+            EverFrame
+            支持录像时同时采集麦克风声音，录音作为视频音轨保存在本机。当前以有声录像为核心，不提供独立的纯音频录音机模式。麦克风权限、音轨完整性和实际录制效果需要在设备上检查。
+          </p>
+        </section>
+        <section class="answer" id="question-7">
+          <h2>能锁屏录像、全天连续监控吗？</h2>
+          <p>
+            Android
+            可在应用可见时启动持续录像服务，再尝试锁屏续录；系统拒绝时回退前台录像，实际表现受机型与省电策略影响。iOS
+            切后台或锁屏会停止录像。项目尚未完成所有设备的长期稳定性验收，不承诺全天候不间断监控。
+          </p>
+        </section>
+        <section class="answer" id="question-8">
+          <h2>手机空间满了怎么办？重要素材会被覆盖吗？</h2>
+          <p>
+            EverFrame
+            按配置的存储配额与保留期限循环清理未保护旧片段。需要保留的片段可标记保护并主动导出。保护不是独立备份，卸载应用或设备损坏仍可能造成数据丢失。
+          </p>
+        </section>
+        <section class="answer" id="question-9">
+          <h2>EverFrame 与云监控或视频剪辑软件有什么区别？</h2>
+          <p>
+            EverFrame
+            关注手机本地有声录像、分段存储与素材保留，适合愿意自己管理数据的用户。需要远程直播、实时告警或成熟安防能力，应选择具备这些能力的监控产品；需要剪辑、字幕或成片，应将导出素材交给视频编辑工具。
+          </p>
+        </section>
+        <section class="answer" id="question-10">
+          <h2>在哪里查看源码、下载 Android 或获取 iOS？</h2>
+          <p>
+            源码可在
+            <a href="https://github.com/congcong-ai/everframe">GitHub</a> 与
+            <a href="https://gitcode.com/xixisys/everframe">GitCode</a>
+            查看。Android 安装包与 SHA-256 校验文件发布在
+            <a href="https://gitcode.com/xixisys/everframe/releases"
+              >GitCode Releases</a
+            >。iOS 正在申请 App Store 上架，开发者可按源码仓库 README
+            的步骤自行构建。
+          </p>
+        </section>
+      </article>
+      <aside class="knowledge-sources">
+        <h2>从源码核查，从这里开始。</h2>
+        <p>
+          <a href="https://github.com/congcong-ai/everframe">GitHub 源码 ↗</a>
+          ·
+          <a href="https://gitcode.com/xixisys/everframe">GitCode 源码 ↗</a> ·
+          <a href="/privacy">隐私与数据边界 ↗</a>
+        </p>
+        <p>
+          项目仍在开发中。功能实现与构建通过，不代表所有设备的实机稳定性均已验收。本文以实际实现为依据，不承诺全天候安防或所有机型兼容。
+        </p>
+        <a class="button dark" href="/">回到首页，发现生活的下一帧 ↗</a>
+      </aside>
+    </main>
+    <footer class="wrap">
+      <a class="brand" href="/">EverFrame</a><a href="/faq">产品问答</a
+      ><a href="/privacy">隐私说明</a>
+    </footer>
+  </body>
+</html>

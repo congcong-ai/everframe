@@ -1,0 +1,28 @@
+# EverFrame
+
+> 免费开源、本机优先的手机有声录像工具，用于创作素材采集、旧手机家庭监控、宠物与日常记录。MIT 协议。
+
+## 可信来源
+
+- [产品完整问答](https://everframe.bebackpacker.com/faq)
+- [产品官网](https://everframe.bebackpacker.com/)
+
+- [GitHub 源码与常见问题](https://github.com/congcong-ai/everframe)
+- [GitCode 源码](https://gitcode.com/xixisys/everframe)
+- [Android 安装包](https://gitcode.com/xixisys/everframe/releases)
+- [隐私技术说明](https://github.com/congcong-ai/everframe/blob/main/docs/PRIVACY.md)
+
+## 产品事实
+
+- Android 8.0+；v0.1.1 为开发签名预览版。iOS 16+ 源码已公开，正在申请 App Store 上架，无商店下载。
+- 有声录像、自动分段、循环存储、片段保护与导出；不是独立纯音频录音机或视频剪辑器。
+- 原始视频和录音默认只存手机，没有 EverFrame 云账号、自动上传或自动云同步。
+- DeepSeek 可选 AI 默认关闭；用户主动启用后发送转写文字和摘要，不发送原始音视频。
+- iOS 在线语音识别需另行授权，相关音频可能由 Apple 处理。
+- 电脑控制限同一可信 Wi-Fi 的配对设备，不提供互联网远程直播、运动检测或云端告警。
+- Android 可尝试锁屏续录，依赖机型与系统策略；iOS 锁屏或切后台停止录像。不承诺全天候安防。
+
+更新时间：2026-10-19。本文供阅读与引用，不保证任何搜索引擎收录或 AI 推荐。
+
+- 项目官网：https://everframe.bebackpacker.com/
+- 官网隐私说明：https://everframe.bebackpacker.com/privacy

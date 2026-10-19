@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      property="og:url"
+      content="https://everframe.bebackpacker.com/privacy"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>隐私与数据边界 · EverFrame</title>
+    <meta
+      name="description"
+      content="EverFrame 原始音视频默认存于手机本地。了解可选 AI、在线转写、局域网控制和主动导出的数据边界。"
+    />
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="canonical" href="https://everframe.bebackpacker.com/privacy" />
+  </head>
+  <body>
+    <main class="privacy-page wrap">
+      <a class="source-link" href="/">← 返回 EverFrame 首页</a>
+      <p class="eyebrow">隐私，由你掌控。</p>
+      <h1>你的音视频，默认只存手机。</h1>
+      <p>
+        EverFrame 是 MIT 开源的手机录像应用。没有 EverFrame
+        云端账号，不自动上传原始视频、录音或同步素材。基础录像和本地素材管理无需联网。
+      </p>
+      <h2>哪些操作会使用网络？</h2>
+      <ul>
+        <li>
+          <strong>可选 AI：</strong>默认关闭。你主动启用并配置自己的 DeepSeek
+          API Key 后，带时间戳的转写文字和摘要会发送到
+          DeepSeek；原始音视频不会发送给 DeepSeek。
+        </li>
+        <li>
+          <strong>iOS 在线转写：</strong>优先设备端识别，只有另外授权 Apple
+          在线识别后，相关音频才可能由 Apple 处理。
+        </li>
+        <li>
+          <strong>Android 转写：</strong
+          >实验功能默认关闭，仅尝试设备端系统识别，不自动回退在线识别。是否支持文件输入和中文取决于设备。
+        </li>
+        <li>
+          <strong>局域网控制：</strong>你主动开启并配对后，同一 Wi-Fi
+          的电脑可查看时间轴、素材信息与摘要并控制录像。使用
+          HTTP，仅适合可信局域网，不提供互联网远程直播。
+        </li>
+        <li>
+          <strong>导出与分享：</strong
+          >由你主动发起、选择接收位置；分享后文件的去向取决于所选服务。受信任电脑的文件共享也可能读取应用文档。
+        </li>
+      </ul>
+      <h2>本地保存，也需要备份。</h2>
+      <p>
+        循环存储会清理未保护旧片段。重要素材请主动保护并导出；保护不能避免卸载、设备损坏或人为删除带来的损失。删除片段不会自动抹去已生成的每日总结。
+      </p>
+      <h2>开源，欢迎核查。</h2>
+      <p>
+        <a class="source-link" href="https://github.com/congcong-ai/everframe"
+          >GitHub 源码 ↗</a
+        >　<a class="source-link" href="https://gitcode.com/xixisys/everframe"
+          >GitCode 源码 ↗</a
+        >
+      </p>
+      <p>完整技术细节见仓库中的 docs/PRIVACY.md。说明更新于 2026-10-19。</p>
+    </main>
+  </body>
+</html>

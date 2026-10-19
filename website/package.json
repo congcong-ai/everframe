@@ -1,0 +1,15 @@
+{
+  "name": "everframe-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node dev.mjs",
+    "start": "node server.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "generate": "node generate-content.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@10.18.3"
+}
