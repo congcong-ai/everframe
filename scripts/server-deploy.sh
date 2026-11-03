@@ -16,7 +16,8 @@ available_kb="$(df -Pk "$base" | awk 'NR==2 {print $4}')"
 [[ ! -e "$next" ]] || { echo '发布版本已存在'; exit 1; }
 mkdir "$next"
 cp -a "$release/." "$next/"
-chown -R everframe:everframe "$next"
+# 跳过各级共享依赖和软链目标，避免影响其他项目。
+find "$next" -name node_modules -type d -prune -o -exec chown -h everframe:everframe {} +
 ln -s "$base/shared/.env" "$next/.env"
 old="$(readlink -f "$base/current" || true)"
 rollback() {

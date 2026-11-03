@@ -1,8 +1,10 @@
 {
   "name": "everframe",
   "private": true,
-  "packageManager": "pnpm@10.18.3",
-  "engines": { "node": ">=22" },
+  "packageManager": "pnpm@11.17.0",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "node website/dev.mjs",
     "test": "node --test website/tests/*.test.mjs",
