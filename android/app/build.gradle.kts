@@ -1,19 +1,50 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
 }
+val playSigningPropertiesFile = System.getenv("EVERFRAME_PLAY_SIGNING_PROPERTIES")
+    ?.let(::file)
+    ?: file("${System.getProperty("user.home")}/.config/everframe/google-play/everframe/signing.properties")
+val playSigningProperties = Properties()
+if (playSigningPropertiesFile.isFile) {
+    playSigningPropertiesFile.inputStream().use { playSigningProperties.load(it) }
+} else if (gradle.startParameter.taskNames.any {
+        it.contains("bundleRelease", ignoreCase = true)
+    }) {
+    throw GradleException("Google Play upload signing is not configured. Set EVERFRAME_PLAY_SIGNING_PROPERTIES.")
+}
 android {
     namespace = "com.everframe.app"
     compileSdk = 36
     defaultConfig {
-        applicationId = "com.everframe.app"
+        applicationId = "com.bebackpacker.everframe"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
-        versionName = "0.1.1"
+        versionCode = 3
+        versionName = "0.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    if (playSigningPropertiesFile.isFile) {
+        signingConfigs {
+            create("playRelease") {
+                storeFile = file(requireNotNull(playSigningProperties.getProperty("storeFile")))
+                storePassword = requireNotNull(playSigningProperties.getProperty("storePassword"))
+                keyAlias = requireNotNull(playSigningProperties.getProperty("keyAlias"))
+                keyPassword = requireNotNull(playSigningProperties.getProperty("keyPassword"))
+            }
+        }
+    }
+    buildTypes {
+        release {
+            if (playSigningPropertiesFile.isFile) {
+                signingConfig = signingConfigs.getByName("playRelease")
+            }
+            ndk { debugSymbolLevel = "FULL" }
+        }
     }
     buildFeatures { compose = true; buildConfig = true }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }

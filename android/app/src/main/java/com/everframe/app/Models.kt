@@ -3,6 +3,7 @@ package com.everframe.app
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.time.Instant
+import java.net.URI
 import java.util.UUID
 
 val json = Json { ignoreUnknownKeys = true; encodeDefaults = true; prettyPrint = true }
@@ -27,13 +28,47 @@ data class Settings(
     val segmentMinutes: Int = 10, val maxStorageGB: Double = 40.0, val retentionDays: Int = 7,
     val minimumFreeGB: Double = 15.0, val aiEnabled: Boolean = false,
     val autoAnalyze: Boolean = true, val wifiOnly: Boolean = true, val chargingOnly: Boolean = true,
-    val model: String = "deepseek-flash", val webEnabled: Boolean = false,
+    val model: String = "deepseek-flash", val aiProvider: String = "deepseek",
+    val openAIModel: String = "gpt-6-luna", val anthropicModel: String = "claude-haiku-5-5",
+    val customAIModel: String = "", val customAIEndpoint: String = "", val webEnabled: Boolean = false,
     val experimentalSystemSpeech: Boolean = false
 ) {
+    fun modelForAI(): String = when (AIService.fromId(aiProvider)) {
+        AIService.DEEPSEEK -> model
+        AIService.OPENAI -> openAIModel
+        AIService.ANTHROPIC -> anthropicModel
+        AIService.CUSTOM -> customAIModel
+    }
+    fun withModelForAI(value: String): Settings = when (AIService.fromId(aiProvider)) {
+        AIService.DEEPSEEK -> copy(model = value)
+        AIService.OPENAI -> copy(openAIModel = value)
+        AIService.ANTHROPIC -> copy(anthropicModel = value)
+        AIService.CUSTOM -> copy(customAIModel = value)
+    }
     fun validated(): Settings {
         require(segmentMinutes in listOf(5, 10, 15, 30) && maxStorageGB in 0.3..500.0 &&
-            retentionDays in 1..365 && minimumFreeGB in 1.0..100.0 && model.isNotBlank() && model.length < 100) { "设置超出允许范围" }
+            retentionDays in 1..365 && minimumFreeGB in 1.0..100.0) { "设置超出允许范围" }
+        require(listOf(model, openAIModel, anthropicModel, customAIModel).all { it.length < 100 } && customAIEndpoint.length <= 2048) { "模型 ID 或接口地址超出长度限制" }
+        require(AIService.entries.any { it.id == aiProvider }) { "AI 服务商无效" }
+        if (aiEnabled) {
+            require(modelForAI().isNotBlank()) { "请填写所选服务商的模型 ID" }
+            if (aiProvider == AIService.CUSTOM.id) require(customAIEndpoint.isNotBlank()) { "请先填写自定义 HTTPS 完整接口地址" }
+        }
+        if (aiProvider == AIService.CUSTOM.id && customAIEndpoint.isNotBlank()) {
+            val endpoint = runCatching { URI(customAIEndpoint) }.getOrNull()
+            require(endpoint?.scheme.equals("https", ignoreCase = true) && !endpoint?.host.isNullOrBlank() &&
+                !endpoint?.path.isNullOrBlank() && endpoint?.path != "/" &&
+                endpoint?.userInfo == null && endpoint?.query == null && endpoint?.fragment == null) { "自定义接口必须是有效的 HTTPS 完整接口地址" }
+        }
         return this
+    }
+}
+
+enum class AIService(val id: String, val label: String) {
+    DEEPSEEK("deepseek", "DeepSeek"), OPENAI("openai", "OpenAI"),
+    ANTHROPIC("anthropic", "Anthropic"), CUSTOM("custom", "自定义 OpenAI 兼容服务");
+    companion object {
+        fun fromId(id: String): AIService = entries.firstOrNull { it.id == id } ?: error("AI 服务商无效")
     }
 }
 object StoragePolicy {

@@ -21,12 +21,13 @@ Kotlin、Jetpack Compose、CameraX 实现，最低 Android 8.0（API 26），编
 ./scripts/android.sh build    # Debug APK
 ./scripts/android.sh test     # JVM 规则与真实 TCP 传输测试
 ./scripts/android.sh check    # 测试、Lint、Debug 和未签名 Release APK
+./scripts/android.sh play     # 签名 Google Play AAB，验证签名并保存最新交付集
 ./scripts/android.sh install  # 构建后更新安装到唯一已授权 USB 真机并打开
 ```
 
 所有编译产物、项目缓存和测试报告默认在 `${TMPDIR:-/tmp}/everframe-android-build/`，不会写入 iOS 工程。可设置 `EVERFRAME_BUILD_DIR` 覆盖。Gradle 下载缓存仍按 Gradle 标准保存在用户目录。Android Studio 也能直接打开 `android/`；从 IDE 运行时同样将模块构建输出放到系统临时目录。
 
-如需指定设备，用 `ANDROID_SERIAL=设备序列号 ./scripts/android.sh install`。安装脚本默认使用 `adb -d`，不会自动选中模拟器。开启开发者选项和 USB 调试，解锁手机确认授权，`doctor` 应显示 `device`；`unauthorized` 或空设备列表均不能安装。Debug APK 为标准开发签名，可在自己的设备侧载。Release APK 尚未配置发行签名，不能直接发布 Google Play。
+如需指定设备，用 `ANDROID_SERIAL=设备序列号 ./scripts/android.sh install`。安装脚本默认使用 `adb -d`，不会自动选中模拟器。开启开发者选项和 USB 调试，解锁手机确认授权，`doctor` 应显示 `device`；`unauthorized` 或空设备列表均不能安装。Debug APK 为标准开发签名，可在自己的设备侧载。Google Play 正式包固定使用 `com.bebackpacker.everframe`，上传签名密钥和配置保存在仓库外的 `~/.config/everframe/google-play/everframe/`，不能提交或与开发 APK 签名混用。`play` 命令在成功签名验证后将 AAB、SHA-256、manifest 及可用的 mapping/native symbols 保存到 `artifacts/google-play/release/`，随后清理本次可再生成的 app 中间产物；Gradle 下载依赖与当前项目缓存保留。
 
 工具链固定：AGP 8.13.2、Gradle 8.13、Kotlin 2.2.21、Compose BOM 2025.10.00、CameraX 1.6.2。Google Play 当前要求新应用/更新面向 API 36；提交前应再核对[官方目标 API 要求](https://developer.android.com/google/play/requirements/target-sdk)。CameraX 版本依据[官方发布记录](https://developer.android.com/jetpack/androidx/releases/camera)。
 
@@ -52,7 +53,7 @@ Kotlin、Jetpack Compose、CameraX 实现，最低 Android 8.0（API 26），编
 
 ## 转写与 AI
 
-AI 默认关闭。用户输入自己的 DeepSeek API Key，Android Keystore 生成 AES-GCM 密钥加密保存；禁用系统备份，源码不含开发者密钥。密钥保存后输入框清空，不回显。仅测试连接会发送小型测试提示。启用 AI 时明确同意转写文字和片段摘要发送 DeepSeek，不发送原始音视频。模型可在手机设置更改。
+AI 默认关闭。Android 设置允许在 DeepSeek、OpenAI、Anthropic 与用户填写的 OpenAI Chat Completions 兼容 HTTPS 接口之间选择；各服务商独立保存模型 ID 和 API Key。自定义接口会将 API Key 和转写数据发往用户填写的主机，配置或更换服务商/接口后会关闭 AI 并要求再次确认。用户自己的 API Key 由 Android Keystore 生成 AES-GCM 密钥加密保存；系统备份已禁用，源码不含开发者密钥。密钥保存后输入框清空，不回显。测试连接会向当前选择的服务商发送小型测试提示；启用 AI 后，带时间戳转写和片段摘要会按分析需要直接发送到用户选择的服务商，不发送原始音视频，EverFrame 不接收请求内容。用户需自行承担服务商的计费与数据处理条款。
 
 Android 不能复用 Apple Speech。官方 `EXTRA_AUDIO_SOURCE` 从 API33 支持 PCM 文件，但服务可能忽略该功能并改开麦克风；词级时间戳从 API34 提供，也依赖识别服务。`isOnDeviceRecognitionAvailable` 只证明端侧服务存在，不证明离线中文、文件输入和时间戳全部可用。因此系统文件转写是**默认关闭、尚待真机验证的实验功能**，不能宣称所有 Android 手机均可转写。
 
@@ -60,7 +61,7 @@ Android 不能复用 Apple Speech。官方 `EXTRA_AUDIO_SOURCE` 从 API33 支持
 
 **即使检查通过，仍须用真机“文件说A、环境说B”对照测试，证明厂商服务确实消费文件。** 系统API无法单靠能力查询证明文件输入未被忽略；在验收前不要对隐私敏感环境启用该实验选项。没有适用服务时，保持它关闭，使用素材页“导入转写”。这条限制是未解决的设备能力验收项。
 
-导入格式见 [中文样例](../shared/fixtures/transcript.zh-CN.json)，`clipID` 必须改成对应素材UUID（导出默认文件名中可见），时间相对原录像秒数，语言 `zh-CN`，必须非空、顺序正确且在实际时长内，最大2MB。导入后可以直接走 DeepSeek 分析链路，不依赖系统语音服务。
+导入格式见 [中文样例](../shared/fixtures/transcript.zh-CN.json)，`clipID` 必须改成对应素材UUID（导出默认文件名中可见），时间相对原录像秒数，语言 `zh-CN`，必须非空、顺序正确且在实际时长内，最大2MB。导入后使用设置中当前选定的服务商分析，不依赖系统语音服务。
 
 分析按片段串行，仅完成且通过音视频校验的录像可进入队列。默认只在前台待机、Wi-Fi、充电、温度正常时运行，开始录像会暂停；下次满足条件继续。失败标记后等待手机手动重试，避免无限重试消耗余额。AI严格校验分数、时间范围和每日总结引用，网络/解析错误不影响录像。时间轴点击可定位原片段；今日总结只依据当天已有分析。
 
@@ -80,7 +81,7 @@ Android 不能复用 Apple Speech。官方 `EXTRA_AUDIO_SOURCE` 从 API33 支持
 - `EverFrameApplication`：Activity 与 Service 共享 AppModel 和唯一素材索引。
 - `AppModel`：生命周期、温度、设置、网络和串行分析；无服务器依赖。severe暂停分析，critical再停电脑控制，emergency停录像；系统也可能更早停止摄像头。
 - `LocalWebServer`：有限HTTP解析、配对与实际TCP，控制请求派发主线程，超时取消。网页资源复用iOS目录。
-- `AndroidTranscription` / `DeepSeek` / `APIKeyStore`：实验端侧文件转写、可选文字分析、设备密钥保护。
+- `AndroidTranscription` / `AIProviderClient` / `APIKeyStore`：实验端侧文件转写、多服务商文字分析、设备密钥保护。
 - `MainActivity`：Material 3四页，切页时保持取景Surface存活，避免重绑正在写入的摄像头。停止按钮在准备和保存状态仍可取消续录。
 
 长时间无录像状态更新、启动超时、音频静音/错误均请求安全停止。保存超过20秒会告警并取消续录，保留写入对象等待设备返回，避免尚未释放时并发创建新段；如系统不返回，只能下次启动恢复检查。不会承诺强杀恢复所有帧。
@@ -89,4 +90,4 @@ Android 不能复用 Apple Speech。官方 `EXTRA_AUDIO_SOURCE` 从 API33 支持
 
 完整操作见 [Android 测试手册](../docs/ANDROID_TESTING.md)。至少需要一台普通手机和一台实际支持前后并发的手机。按“一分钟单摄有声 → 短分段 → 循环保护 → 中断恢复 → Web → 转写对照 → AI → 双摄 → 2/4/8小时”的顺序，不得用APK构建成功替代。
 
-开源前检查 `.env`、`local.properties`、签名密钥、日志、设备序列号、录像和转写内容。当前 applicationId 为开发占位，正式上架前确定唯一标识和发行签名；不将个人签名材料提交。现有 Gradle Wrapper 版权声明保留。项目开源许可证尚未选择，此次不新增项目许可证。未发布商店、未创建PR、未操作GitHub。
+开源前检查 `.env`、`local.properties`、签名密钥、日志、设备序列号、录像和转写内容。正式 `applicationId` 为 `com.bebackpacker.everframe`；上传签名材料保留在仓库外。现有 Gradle Wrapper 版权声明保留。项目采用 MIT 许可证。Google Play 正式发布前仍须完成设备验收、商店资料、内容声明与审核材料。

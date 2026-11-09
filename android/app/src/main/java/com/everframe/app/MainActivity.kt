@@ -267,6 +267,10 @@ fun gb(bytes: Long) = "%.2f GB".format(bytes / 1e9)
     val context = LocalContext.current
     var key by remember { mutableStateOf("") }
     var consent by remember { mutableStateOf(false) }
+    var providerMenu by remember { mutableStateOf(false) }
+    val selectedProvider = AIService.fromId(settings.aiProvider)
+    var modelName by remember(settings.aiProvider, settings.modelForAI()) { mutableStateOf(settings.modelForAI()) }
+    var customEndpoint by remember(settings.customAIEndpoint) { mutableStateOf(settings.customAIEndpoint) }
     Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text("设置", style = MaterialTheme.typography.headlineMedium)
         Text("录像与存储", style = MaterialTheme.typography.titleMedium)
@@ -286,23 +290,42 @@ fun gb(bytes: Long) = "%.2f GB".format(bytes / 1e9)
         SettingSwitch("启用 AI（默认关闭）", settings.aiEnabled) { enabled -> if (enabled) consent = true else model.attempt { model.updateSettings(settings.copy(aiEnabled = false)) } }
         Text("${model.speech.availability()}\n仅使用端侧识别，不自动切换在线服务。基础录像不依赖 AI。", style = MaterialTheme.typography.bodySmall)
         SettingSwitch("实验：系统离线文件转写（需真机核验）", settings.experimentalSystemSpeech) { enabled -> model.attempt { model.updateSettings(settings.copy(experimentalSystemSpeech = enabled)) } }
-        OutlinedTextField(value = key, onValueChange = { key = it }, label = { Text("自己的 DeepSeek API Key") }, visualTransformation = PasswordVisualTransformation(), singleLine = true, modifier = Modifier.fillMaxWidth())
-        Row { TextButton(onClick = { model.saveKey(key); key = "" }) { Text("保存密钥") }; TextButton(onClick = { model.saveKey(""); key = "" }) { Text("移除密钥") }; TextButton(onClick = { model.testKey() }) { Text("测试连接") } }
-        var modelName by remember(settings.model) { mutableStateOf(settings.model) }
-        OutlinedTextField(value = modelName, onValueChange = { modelName = it }, label = { Text("DeepSeek 模型") }, singleLine = true, modifier = Modifier.fillMaxWidth())
-        TextButton(onClick = { model.attempt { model.updateSettings(settings.copy(model = modelName)) } }) { Text("保存模型") }
+        Text("AI 服务商", style = MaterialTheme.typography.titleSmall)
+        Box {
+            OutlinedButton(onClick = { providerMenu = true }) { Text(selectedProvider.label) }
+            DropdownMenu(expanded = providerMenu, onDismissRequest = { providerMenu = false }) {
+                AIService.entries.forEach { service -> DropdownMenuItem(text = { Text(service.label) }, onClick = {
+                    providerMenu = false; key = ""; model.selectAIProvider(service.id)
+                }) }
+            }
+        }
+        if (selectedProvider == AIService.CUSTOM) {
+            OutlinedTextField(value = customEndpoint, onValueChange = { customEndpoint = it },
+                label = { Text("自定义完整 HTTPS 接口地址") }, placeholder = { Text("https://api.example.com/v1/chat/completions") },
+                singleLine = true, modifier = Modifier.fillMaxWidth())
+            TextButton(onClick = { model.attempt { model.updateSettings(settings.copy(customAIEndpoint = customEndpoint.trim())) } }) { Text("保存接口地址") }
+            Text("只支持 OpenAI Chat Completions 兼容接口。API Key 和转写文字会发送到你填写的主机；请确认该服务可信。", style = MaterialTheme.typography.bodySmall)
+        }
+        OutlinedTextField(value = key, onValueChange = { key = it }, label = { Text("自己的 ${selectedProvider.label} API Key") },
+            visualTransformation = PasswordVisualTransformation(), singleLine = true, modifier = Modifier.fillMaxWidth())
+        Text("Key 使用 Android Keystore 加密保存在本机，不会回显。每个服务商的 Key 分别保存。测试连接会向所选服务商发送测试提示。", style = MaterialTheme.typography.bodySmall)
+        Row { TextButton(onClick = { model.saveKey(selectedProvider.id, key); key = "" }) { Text("保存密钥") }; TextButton(onClick = { model.saveKey(selectedProvider.id, ""); key = "" }) { Text("移除当前密钥") }; TextButton(onClick = { model.testKey() }) { Text("测试连接") } }
+        OutlinedTextField(value = modelName, onValueChange = { modelName = it }, label = { Text("${selectedProvider.label} 模型 ID") },
+            placeholder = { if (selectedProvider == AIService.CUSTOM) Text("填写服务商提供的模型 ID") }, singleLine = true, modifier = Modifier.fillMaxWidth())
+        TextButton(onClick = { model.attempt { model.updateSettings(settings.withModelForAI(modelName.trim())) } }) { Text("保存模型") }
         SettingSwitch("仅 Wi-Fi 分析", settings.wifiOnly) { model.attempt { model.updateSettings(settings.copy(wifiOnly = it)) } }
         SettingSwitch("仅充电时分析", settings.chargingOnly) { model.attempt { model.updateSettings(settings.copy(chargingOnly = it)) } }
-        Text("开始录像、离开前台或温度较高时暂停分析。音视频保留本机；启用 AI 后，带时间戳文字将发送至 DeepSeek。", style = MaterialTheme.typography.bodySmall)
+        Text("开始录像、离开前台或温度较高时暂停分析。启用 AI 后，带时间戳转写和片段摘要只发送到你选择的服务商；原始音视频不发送。更换服务商或自定义接口会关闭 AI，并要求重新确认。", style = MaterialTheme.typography.bodySmall)
         if (BuildConfig.DEBUG) {
             HorizontalDivider(); Text("开发者测试（重启恢复）")
             Row { listOf(0, 30, 60).forEach { seconds -> TextButton(onClick = { model.recorder.debugSegmentSeconds = seconds; model.notice(if (seconds == 0) "已恢复正常分段" else "调试分段：${seconds}秒") }) { Text(if (seconds == 0) "正常" else "${seconds}秒") } } }
             TextButton(onClick = { model.recorder.stop("模拟低磁盘，已停止录像") }) { Text("模拟低磁盘停止") }
         }
         TextButton(onClick = { context.startActivity(Intent(SystemSettings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:${context.packageName}".toUri())) }) { Text("打开系统权限设置") }
+        TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.privacy_policy_url)))) }) { Text("隐私政策") }
         Text("EverFrame ${BuildConfig.VERSION_NAME} · Android原生版\n本机优先，无账号、订阅与云同步。卸载会删除本机素材，请先导出。", style = MaterialTheme.typography.bodySmall)
     }
-    if (consent) AlertDialog(onDismissRequest = { consent = false }, title = { Text("启用文字分析？") }, text = { Text("系统端侧服务将尝试转写已保存录像。带时间戳的转写文字与片段摘要会发送到 DeepSeek，使用你自己的 API Key；不会上传原始音视频。离线中文、文件输入与时间戳需本机验证，失败时不会伪造结果。") }, confirmButton = {
+    if (consent) AlertDialog(onDismissRequest = { consent = false }, title = { Text("启用 ${selectedProvider.label} 文字分析？") }, text = { Text("系统端侧服务将尝试转写已保存录像。启用后，带时间戳转写文字、片段摘要和你自己的 API Key 会通过 HTTPS 直接发送到 ${if (selectedProvider == AIService.CUSTOM) customEndpoint.ifBlank { "自定义接口" } else selectedProvider.label}；EverFrame 不接收这些数据，也不会发送原始音视频。服务商可能按自己的政策处理请求。更换服务商或自定义接口后需要重新确认。") }, confirmButton = {
         TextButton(onClick = { model.attempt { model.updateSettings(settings.copy(aiEnabled = true)) }; consent = false }) { Text("同意并启用") }
     }, dismissButton = { TextButton(onClick = { consent = false }) { Text("取消") } })
 }

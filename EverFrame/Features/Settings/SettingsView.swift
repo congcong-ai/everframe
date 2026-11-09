@@ -37,8 +37,10 @@ struct SettingsView: View {
                     }
                 }
                 Section("AI · DeepSeek") {
+                    Text("AI 默认关闭。API Key 保存在 iOS Keychain；使用 AI 或测试连接时，Key 会通过 HTTPS 直接发送至 DeepSeek。片段分析会发送带时间信息的转写文字，每日总结会发送已生成的片段摘要；原始视频、音频和关键帧不会发送。DeepSeek 当前政策说明可能将输入用于提供和改进服务（包括模型训练），并按其政策在中国处理、保留数据。请先阅读服务商政策，不要提交敏感或无权提供的内容。").font(.caption).foregroundColor(.secondary)
+                    Link("DeepSeek Open Platform 条款", destination: URL(string: "https://cdn.deepseek.com/policies/en-US/deepseek-open-platform-terms-of-service.html")!)
+                    Link("DeepSeek 隐私政策", destination: URL(string: "https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html")!)
                     Toggle("启用 AI 分析", isOn: bind(\.aiEnabled))
-                    Text("启用后，已录制素材会转写，文字将发送至你配置的 DeepSeek API。原始视频不会发送给 DeepSeek。AI 失败不影响录像。").font(.caption).foregroundColor(.secondary)
                     TextField("模型", text: bind(\.model)).textInputAutocapitalization(.never).autocorrectionDisabled()
                     SecureField("输入新的 API Key", text: $key).textInputAutocapitalization(.never).autocorrectionDisabled()
                     Text(KeychainStore.configuredKey == nil ? "尚未配置 Key" : "Key 已配置，存于 Keychain；不会在这里回显").font(.caption).foregroundColor(.secondary)
@@ -75,7 +77,25 @@ struct SettingsView: View {
                     Button("同意") { set(\.allowAppleOnlineSpeech, true) }
                 } message: { Text("当本地识别不可用时，录像中提取的音频会发送至 Apple 进行语音识别。原始视频不会上传。") }
                 .sheet(isPresented: $logs) { NavigationStack { ScrollView { Text((try? String(contentsOf: AppLogger.shared.url, encoding: .utf8)) ?? "尚无日志").font(.system(.caption, design: .monospaced)).textSelection(.enabled).padding() }.navigationTitle("诊断日志").toolbar { Button("关闭") { logs = false } } } }
-                .sheet(isPresented: $privacy) { NavigationStack { ScrollView { Text("视频、转写、时间轴和每日总结保存在本机。\n\n启用 AI 后，仅带时间戳的转写文本发送给你配置的 DeepSeek API；原始视频和关键帧不发送。\n\nApple 语音识别优先在设备本地完成。只有你明确允许在线识别后，才会在本地不支持时向 Apple 发送音频。\n\n局域网网页只向已配对的电脑提供状态、素材信息与摘要，使用明文 HTTP。请只在可信网络启用。\n\n录像保持前台且持续显示 REC。退出前台停止录像，不使用伪后台模式。\n\n删除素材同时删除对应转写和片段分析；已生成的每日总结独立保存。卸载 App 会删除本机录像，请先分享导出。\n\n请尊重工作场所内其他人的知情与隐私。不会在未点击开始时自动录像。").padding() }.navigationTitle("隐私说明").toolbar { Button("关闭") { privacy = false } } } }
+                .sheet(isPresented: $privacy) {
+                    NavigationStack {
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("视频、转写、时间轴和每日总结保存在本机。EverFrame 不提供账号或云端素材存储。")
+                                Text("AI 默认关闭。DeepSeek API Key 保存在 iOS Keychain；你使用 AI 或测试连接时，Key 会通过 HTTPS 直接发送至 DeepSeek。片段分析请求包含带时间信息的转写文字；每日总结请求包含已生成的片段摘要；连接测试会发送 Key 和测试提示。EverFrame 不接收这些请求，原始视频、音频和关键帧不会发送。你可以在设置中删除已保存的 Key。")
+                                Text("DeepSeek 当前公开政策说明，服务可能将输入用于提供、开发和改进服务（包括模型训练），并可能在账户存续期间或为法律及业务需要保留数据；其政策说明个人数据可能在中国处理和存储。具体处理、保留及费用以你使用时适用的服务条款和隐私政策为准。请勿发送敏感或你无权提供的内容。")
+                                Link("DeepSeek Open Platform 条款", destination: URL(string: "https://cdn.deepseek.com/policies/en-US/deepseek-open-platform-terms-of-service.html")!)
+                                Link("DeepSeek 隐私政策", destination: URL(string: "https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html")!)
+                                Text("Apple 语音识别优先在设备本地完成。只有你明确允许在线识别后，才会在本地不支持时向 Apple 发送音频。")
+                                Text("局域网网页只向已配对的电脑提供状态、素材信息与摘要，使用明文 HTTP。请只在可信网络启用。录像保持前台且持续显示 REC；退出前台停止录像，不使用伪后台模式。")
+                                Text("删除素材同时删除对应转写和片段分析；已生成的每日总结独立保存。卸载 App 会删除本机录像，请先导出。请尊重工作场所内其他人的知情与隐私。不会在未点击开始时自动录像。")
+                            }
+                            .padding()
+                        }
+                        .navigationTitle("隐私说明")
+                        .toolbar { Button("关闭") { privacy = false } }
+                    }
+                }
         }
     }
     private func bind<T>(_ path: WritableKeyPath<AppSettings,T>) -> Binding<T> { Binding(get: { settings.value[keyPath: path] }, set: { set(path, $0) }) }

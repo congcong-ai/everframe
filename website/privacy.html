@@ -22,19 +22,29 @@
       <p class="eyebrow">隐私，由你掌控。</p>
       <h1>你的音视频，默认只存手机。</h1>
       <p>
-        EverFrame 是 MIT 开源的手机录像应用。没有 EverFrame
+        EverFrame 是 MIT 开源的手机录像应用，由<strong>杭州智化科技有限公司（XiXisys）</strong>运营。没有 EverFrame
         云端账号，不自动上传原始视频、录音或同步素材。基础录像和本地素材管理无需联网。
+      </p>
+      <h2>本机保存与删除</h2>
+      <p>
+        录像、素材信息、导入的转写和分析结果保存在本机应用数据目录。循环存储会按你的设置清理未保护的旧片段；你也可以在素材页删除片段。删除片段会同时删除关联转写和分析，但已生成的每日总结可能作为历史内容继续保留。Android 的各服务商 API Key 使用 Android Keystore 加密保存，可分别在设置中移除，并排除系统备份。卸载应用会删除应用私有数据；重要录像请先导出。
       </p>
       <h2>哪些操作会使用网络？</h2>
       <ul>
         <li>
-          <strong>可选 AI：</strong>默认关闭。你主动启用并配置自己的 DeepSeek
-          API Key 后，带时间戳的转写文字和摘要会发送到
-          DeepSeek；原始音视频不会发送给 DeepSeek。
+          <strong>Android 可选 AI：</strong>默认关闭。你可以选择 DeepSeek、OpenAI、Anthropic，或填写 OpenAI Chat Completions 兼容服务的 HTTPS 地址。你主动启用或测试连接时，应用会将自己的 API Key 和相关请求内容（可能包括带时间戳的转写、片段摘要、每日总结摘要或测试提示）直接发送到所选服务；EverFrame 不接收这些数据，也不会发送原始音视频。自定义接口的主机由你指定，请在启用前核对并确认可信。服务商的数据处理、保留和费用按其条款执行。更换服务商或自定义接口后，AI 会关闭并要求重新确认。
         </li>
         <li>
           <strong>iOS 在线转写：</strong>优先设备端识别，只有另外授权 Apple
           在线识别后，相关音频才可能由 Apple 处理。
+        </li>
+        <li>
+          <strong>iOS 可选 AI：</strong>默认关闭。你主动启用并配置自己的 DeepSeek
+          API Key 后，应用会通过 HTTPS 将该 Key 随请求直接发送至 DeepSeek。片段分析请求可能包含带时间戳的转写文字；每日总结请求包含已生成的片段摘要；连接测试会发送 Key 和测试提示。EverFrame
+          不接收这些请求。原始视频、音频和关键帧不会发送给 DeepSeek。Key
+          保存在 iOS Keychain，可在设置中删除。DeepSeek 当前公开政策说明，输入可能用于提供、开发和改进服务（包括模型训练），并可能在账户存续期间或为法律及业务需要保留；政策说明个人数据可能在中国处理和存储。具体处理、保留和费用以使用时适用的服务商政策为准。请勿发送敏感信息或未经授权的第三方内容。请阅读
+          <a href="https://cdn.deepseek.com/policies/en-US/deepseek-open-platform-terms-of-service.html">DeepSeek Open Platform 条款</a>
+          和 <a href="https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html">DeepSeek 隐私政策</a>。
         </li>
         <li>
           <strong>Android 转写：</strong
@@ -62,7 +72,13 @@
           >GitCode 源码 ↗</a
         >
       </p>
-      <p>完整技术细节见仓库中的 docs/PRIVACY.md。说明更新于 2026-10-19。</p>
+      <h2>联系运营方</h2>
+      <p>
+        运营主体：杭州智化科技有限公司（XiXisys）。隐私咨询：
+        <a class="source-link" href="mailto:info@xixisys.com">info@xixisys.com</a>。
+        EverFrame 不提供用户账号或开发者云端素材库；本机素材的删除方式见上文。
+      </p>
+      <p>完整技术细节见仓库中的 docs/PRIVACY.md。说明更新于 2026-11-07。</p>
     </main>
   </body>
 </html>

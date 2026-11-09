@@ -24,6 +24,7 @@
 		5AC1A0290E77752CE1AF01DA /* EverFrame/Core/Storage/DataRepositories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7420DAA3D82FAAF4135EBCAE /* EverFrame/Core/Storage/DataRepositories.swift */; };
 		5CAAA72950F25B63BDBD12B9 /* EverFrame/App/Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = EDB635FBEE397B8CA5039574 /* EverFrame/App/Product.swift */; };
 		669B69A577921B2FF5D50676 /* EverFrame/Resources/PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 44FDA3C109CEDB661A375604 /* EverFrame/Resources/PrivacyInfo.xcprivacy */; };
+		B4B47C7E56304C42B57FC38E /* EverFrame/Resources/Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E0053BDBFF054CA6B0DFAC8A /* EverFrame/Resources/Assets.xcassets */; };
 		817E67E01DD8944D51992E3F /* EverFrame/Core/AI/AnalysisQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9737A4E33AD5CCCA09146A72 /* EverFrame/Core/AI/AnalysisQueue.swift */; };
 		8D04680DC98F254EAFE8C515 /* EverFrame/Features/Clips/ClipsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBAE9614BE6CD0CAC675552D /* EverFrame/Features/Clips/ClipsView.swift */; };
 		903B4896AF706FEA0F025118 /* EverFrame/Features/Clips/ClipPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66764A7342C574AD7981D9E9 /* EverFrame/Features/Clips/ClipPlayer.swift */; };
@@ -76,6 +77,7 @@
 		D1EA0B4AC2CE588F9BDCA8FD /* EverFrame/Core/AI/AIJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Core/AI/AIJSON.swift; sourceTree = SOURCE_ROOT; };
 		DC6DDA570D3FB3B0A3AF2777 /* EverFrame/Models/AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Models/AppSettings.swift; sourceTree = SOURCE_ROOT; };
 		DFBA7AADE0868074C2861C98 /* Config/Product.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/Product.xcconfig; sourceTree = SOURCE_ROOT; };
+		E0053BDBFF054CA6B0DFAC8A /* EverFrame/Resources/Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = EverFrame/Resources/Assets.xcassets; sourceTree = SOURCE_ROOT; };
 		EDB635FBEE397B8CA5039574 /* EverFrame/App/Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/App/Product.swift; sourceTree = SOURCE_ROOT; };
 		FBAE9614BE6CD0CAC675552D /* EverFrame/Features/Clips/ClipsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Features/Clips/ClipsView.swift; sourceTree = SOURCE_ROOT; };
 		FD12AEDD11706DBB4AB765E6 /* EverFrame/Features/Recorder/CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EverFrame/Features/Recorder/CameraPreview.swift; sourceTree = SOURCE_ROOT; };
@@ -126,6 +128,7 @@
 				045D43E2EF9AEDAFE812C681 /* EverFrame/Models/AIModels.swift */,
 				DC6DDA570D3FB3B0A3AF2777 /* EverFrame/Models/AppSettings.swift */,
 				413444796A9402A1D918BD1B /* EverFrame/Models/Clip.swift */,
+				E0053BDBFF054CA6B0DFAC8A /* EverFrame/Resources/Assets.xcassets */,
 				44FDA3C109CEDB661A375604 /* EverFrame/Resources/PrivacyInfo.xcprivacy */,
 				B6BA1573ABB83318517E56D7 /* EverFrame/Web/app.js */,
 				3F7F12B4368D0ABCA110D52A /* EverFrame/Web/index.html */,
@@ -187,6 +190,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4B47C7E56304C42B57FC38E /* EverFrame/Resources/Assets.xcassets in Resources */,
 				669B69A577921B2FF5D50676 /* EverFrame/Resources/PrivacyInfo.xcprivacy in Resources */,
 				E9400216B3ACB35E5605DC0B /* EverFrame/Web/app.js in Resources */,
 				BB838AB6871557EDD0125EAF /* EverFrame/Web/index.html in Resources */,
@@ -243,8 +247,8 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 39DP453QT6;
-				PRODUCT_BUNDLE_IDENTIFIER = com.peter.everframe;
+				DEVELOPMENT_TEAM = G6692S3U7C;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bebackpacker.everframe;
 				SDKROOT = iphoneos;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -257,8 +261,8 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 39DP453QT6;
-				PRODUCT_BUNDLE_IDENTIFIER = com.peter.everframe;
+				DEVELOPMENT_TEAM = G6692S3U7C;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bebackpacker.everframe;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = YES;

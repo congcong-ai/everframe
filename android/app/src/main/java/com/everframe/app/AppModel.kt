@@ -35,7 +35,7 @@ class AppModel(application: Application) : AndroidViewModel(application) {
     val recorder = RecordingController(context, repo, viewModelScope, { settings.value }, ::warn)
     val speech = AndroidTranscription(context)
     private val keyStore = APIKeyStore(context)
-    private val ai = DeepSeek()
+    private val ai = AIProviderClient()
     private val web = LocalWebServer(::handleWeb, ::notice)
     private var analysisJob: Job? = null
     private var thermalStatus = 0
@@ -76,12 +76,31 @@ class AppModel(application: Application) : AndroidViewModel(application) {
     fun background() { recordingServicePending = false; recorder.background(); analysisJob?.cancel(); stopWeb() }
     fun attempt(block: () -> Unit) { try { block() } catch (e: Exception) { notice(safeError(e, "操作失败")) } }
     fun updateSettings(value: Settings) {
-        value.validated(); atomicWrite(File(root, "settings.json"), json.encodeToString(value)); settings.value = value
-        if (!value.aiEnabled) { analysisJob?.cancel(); analysisState.value = "AI 已关闭" }
+        val current = settings.value
+        val destinationChanged = value.aiProvider != current.aiProvider ||
+            (value.aiProvider == AIService.CUSTOM.id && value.customAIEndpoint != current.customAIEndpoint)
+        val safeValue = if (destinationChanged && current.aiEnabled) value.copy(aiEnabled = false) else value
+        safeValue.validated(); atomicWrite(File(root, "settings.json"), json.encodeToString(safeValue)); settings.value = safeValue
+        if (!safeValue.aiEnabled) { analysisJob?.cancel(); analysisState.value = "AI 已关闭" }
+        if (destinationChanged && current.aiEnabled) notice("AI 服务商或接口已更改，AI 已关闭；请重新阅读说明并启用")
         refreshWeb(); scheduleAnalysis()
     }
-    fun saveKey(value: String) = attempt { keyStore.save(value); notice(if (value.isBlank()) "已移除 API Key" else "API Key 已安全保存") }
-    fun testKey() { viewModelScope.launch { try { ai.test(settings.value, keyStore.read()); notice("DeepSeek 连接成功") } catch (e: Exception) { notice(safeError(e, "连接失败")) } } }
+    fun selectAIProvider(provider: String) = attempt {
+        AIService.fromId(provider)
+        if (settings.value.aiProvider != provider) updateSettings(settings.value.copy(aiProvider = provider, aiEnabled = false))
+    }
+    fun saveKey(provider: String, value: String) = attempt {
+        keyStore.save(provider, value)
+        notice(if (value.isBlank()) "已移除 ${AIService.fromId(provider).label} API Key" else "${AIService.fromId(provider).label} API Key 已安全保存")
+    }
+    fun testKey() {
+        viewModelScope.launch {
+            val current = settings.value
+            val provider = AIService.fromId(current.aiProvider)
+            try { ai.test(current, keyStore.read(current.aiProvider)); notice("${provider.label} 连接成功") }
+            catch (e: Exception) { notice(safeError(e, "${provider.label} 连接失败")) }
+        }
+    }
     private fun allowedAnalysis(): Boolean {
         if (!recovered || !settings.value.aiEnabled || !recorder.foreground || thermalStatus >= 3 || recorder.active) return false
         val network = context.getSystemService(ConnectivityManager::class.java)
@@ -109,7 +128,7 @@ class AppModel(application: Application) : AndroidViewModel(application) {
         if (!allowedAnalysis()) { analysisState.value = if (!settings.value.aiEnabled) "AI 已关闭" else "等待前台待机、合适温度、Wi-Fi 与充电条件"; return }
         analysisJob = viewModelScope.launch {
             try {
-                require(keyStore.read().isNotBlank()) { "请先保存自己的 API Key" }
+                require(keyStore.read(settings.value.aiProvider).isNotBlank()) { "请先保存所选服务商的 API Key" }
                 for (clip in repo.clips.value.sortedBy { it.startAt }.filter { !it.isWriting && it.failure == null && it.aiStatus == "pending" }) {
                     if (!allowedAnalysis()) break
                     repo.pin(clip.id)
@@ -126,7 +145,8 @@ class AppModel(application: Application) : AndroidViewModel(application) {
                         }
                         repo.update(clip.id) { it.copy(transcriptionStatus = "completed", aiStatus = "running") }
                         ensureActive(); require(allowedAnalysis()) { "分析条件已改变，请稍后重试" }
-                        val result = ai.analyze(transcript, clip.duration, settings.value, keyStore.read())
+                        val current = settings.value
+                        val result = ai.analyze(transcript, clip.duration, current, keyStore.read(current.aiProvider))
                         ensureActive()
                         withContext(Dispatchers.IO) { atomicWrite(File(root, "${clip.id}.analysis.json"), json.encodeToString(result)) }
                         analyses.value = analyses.value + (clip.id to result)
@@ -168,7 +188,8 @@ class AppModel(application: Application) : AndroidViewModel(application) {
                 analysisState.value = "正在生成今日总结"
                 val day = LocalDate.now()
                 val clips = todayClips(day).filter { it.id in analyses.value }
-                val result = ai.summarize(day.toString(), clips, analyses.value.filterKeys { id -> clips.any { it.id == id } }, settings.value, keyStore.read())
+                val current = settings.value
+                val result = ai.summarize(day.toString(), clips, analyses.value.filterKeys { id -> clips.any { it.id == id } }, current, keyStore.read(current.aiProvider))
                 ensureActive(); withContext(Dispatchers.IO) { atomicWrite(File(root, "${result.id}.daily.json"), json.encodeToString(result)) }
                 daily.value = result; analysisState.value = "今日总结已保存"
             } catch (e: CancellationException) { analysisState.value = "总结已暂停"; throw e }

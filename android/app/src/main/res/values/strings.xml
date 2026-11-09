@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">EverFrame</string>
+    <string name="privacy_policy_url" translatable="false">https://everframe.bebackpacker.com/privacy</string>
 </resources>
